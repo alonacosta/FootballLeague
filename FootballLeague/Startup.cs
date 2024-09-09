@@ -30,6 +30,8 @@ namespace FootballLeague
 				cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
+            services.AddTransient<SeedDb>();
+
             services.AddScoped<IClubRepository, ClubRepository>();
 
 			services.AddControllersWithViews();
