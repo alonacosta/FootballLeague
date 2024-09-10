@@ -16,11 +16,13 @@ namespace FootballLeague.Data.Entities
 		[Required]
 		public string Stadium { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "A capacidade deve ser um número positivo.")]
-        public int Capacity { get; set; }
+		[Range(1, int.MaxValue, ErrorMessage = "A capacidade deve ser um número positivo.")]
+		public int Capacity { get; set; }
 
-        [Display(Name = "Head Coach")]
-        public string? HeadCoach { get; set; }
+		[Display(Name = "Head Coach")]
+		public string? HeadCoach { get; set; }
+
+		public User User {get; set;}
 	}
 }
 

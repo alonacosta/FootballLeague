@@ -7,22 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
+using FootballLeague.Helpers;
 
 namespace FootballLeague.Controllers
 {
     public class ClubsController : Controller
     {    
         private readonly IClubRepository _clubRepository;
+        private readonly IUserHelper _userHelper;
 
-        public ClubsController(IClubRepository clubRepository)
+        public ClubsController(IClubRepository clubRepository,
+            IUserHelper userHelper)
         {       
             _clubRepository = clubRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Clubs
         public IActionResult Index()
         {
-            return View(_clubRepository.GetAll());
+            return View(_clubRepository.GetAll().OrderBy(c => c.Name));
         }
 
         // GET: Clubs/Details/5
@@ -58,7 +62,9 @@ namespace FootballLeague.Controllers
         {
             if (ModelState.IsValid)
             {
-               await _clubRepository.CreateAsync(club);
+                //TODO: Modify to User with role Representative
+                club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
+                await _clubRepository.CreateAsync(club);
                 return RedirectToAction(nameof(Index));
             }
             return View(club);
@@ -96,6 +102,8 @@ namespace FootballLeague.Controllers
             {
                 try
                 {
+                    //TODO: Modify to User with role Representative
+                    club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
                     await _clubRepository.UpdateAsync(club);
                    
                 }
