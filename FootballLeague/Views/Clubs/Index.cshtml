@@ -37,7 +37,10 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageLogo)
+                    @if(!string.IsNullOrEmpty(item.ImageLogo))
+                    {
+                        <img src="@Url.Content(item.ImageLogo)" alt="Club logo" style="width:50px;height:auto;max-width:100%;max-height:auto;" />
+                    }                
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Stadium)

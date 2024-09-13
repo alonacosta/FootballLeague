@@ -15,11 +15,11 @@ namespace FootballLeague.Controllers.API
         {
             _clubRepository = clubRepository;
         }
-
+        
         [HttpGet]
         public IActionResult GetClubs()
         {
-            return Ok(_clubRepository.GetAll());
+            return Ok(_clubRepository.GetAllWithUsers());
         }
     }
 }

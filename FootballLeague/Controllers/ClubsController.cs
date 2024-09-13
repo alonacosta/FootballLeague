@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using FootballLeague.Helpers;
+using FootballLeague.Models;
+using System.IO;
 
 namespace FootballLeague.Controllers
 {
@@ -58,8 +60,30 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Club club)
-        {
+        public async Task<IActionResult> Create(ClubViewModel model)
+        {           
+            var path = string.Empty;
+
+            if(model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+				var guid = Guid.NewGuid().ToString();
+				var file = $"{guid}.jpg";
+
+				path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot\\images\\clubs",
+                    file);
+
+                using(var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.ImageFile.CopyToAsync(stream);
+                }
+
+                path = $"~/images/clubs/{file}";
+            }
+             
+             var club = this.ToClub(model, path);
+
             if (ModelState.IsValid)
             {
                 //TODO: Modify to User with role Representative
@@ -67,7 +91,21 @@ namespace FootballLeague.Controllers
                 await _clubRepository.CreateAsync(club);
                 return RedirectToAction(nameof(Index));
             }
-            return View(club);
+            return View(model);
+        }
+
+        private Club ToClub(ClubViewModel model, string path)
+        {
+            return new Club
+            {
+                Id = model.Id,
+                Name = model.Name,
+                ImageLogo = path,
+                Stadium = model.Stadium,
+                Capacity = model.Capacity,
+                HeadCoach = model.HeadCoach,
+                User = model.User,
+            };
         }
 
         // GET: Clubs/Edit/5
@@ -83,7 +121,23 @@ namespace FootballLeague.Controllers
             {
                 return NotFound();
             }
-            return View(club);
+
+            var model = this.ToClubViewModel(club); 
+            return View(model);
+        }
+
+        private object ToClubViewModel(Club club)
+        {
+            return new ClubViewModel
+            {
+                Id = club.Id,
+                Name = club.Name,
+                ImageLogo = club.ImageLogo,
+                Stadium = club.Stadium,
+                Capacity = club.Capacity,
+                HeadCoach = club.HeadCoach,
+                User = club.User,
+            };
         }
 
         // POST: Clubs/Edit/5
@@ -91,17 +145,34 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Club club)
-        {
-            if (id != club.Id)
-            {
-                return NotFound();
-            }
-
+        public async Task<IActionResult> Edit(ClubViewModel model)
+        {  
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = model.ImageLogo;
+
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+						var guid = Guid.NewGuid().ToString();
+						var file = $"{guid}.jpg";
+
+						path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\images\\clubs",
+                            file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/clubs/{file}";
+                    }
+
+                    var club = this.ToClub(model, path);
+
                     //TODO: Modify to User with role Representative
                     club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
                     await _clubRepository.UpdateAsync(club);
@@ -109,7 +180,7 @@ namespace FootballLeague.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await _clubRepository.ExistAsync(club.Id))
+                    if (! await _clubRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -120,7 +191,7 @@ namespace FootballLeague.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(club);
+            return View(model);
         }
 
         // GET: Clubs/Delete/5

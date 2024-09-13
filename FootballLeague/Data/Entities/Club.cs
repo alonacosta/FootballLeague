@@ -23,6 +23,18 @@ namespace FootballLeague.Data.Entities
 		public string? HeadCoach { get; set; }
 
 		public User User {get; set;}
+
+		public string ImageFullPath
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(ImageLogo))
+				{
+					return null;
+				}
+				return $"https://localhost:44396{ImageLogo.Substring(1)}";
+			}
+		}
 	}
 }
 

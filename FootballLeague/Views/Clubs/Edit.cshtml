@@ -1,4 +1,4 @@
-﻿@model FootballLeague.Data.Entities.Club
+﻿@model FootballLeague.Models.ClubViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,18 +10,19 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageLogo" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageLogo" class="control-label"></label>
-                <input asp-for="ImageLogo" class="form-control" />
-                <span asp-validation-for="ImageLogo" class="text-danger"></span>
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Stadium" class="control-label"></label>
@@ -39,15 +40,19 @@
                 <span asp-validation-for="HeadCoach" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
+    <div class="col-md-4">
+        @if (!string.IsNullOrEmpty(Model.ImageLogo))
+        {
+            <img src="@Url.Content(Model.ImageLogo)" alt="Club logo" style="width:250px;height:250px;max-width:100%;max-height:auto;" />
+        }
+    </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
