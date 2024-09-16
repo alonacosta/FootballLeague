@@ -1,0 +1,27 @@
+﻿@model FootballLeague.Models.ClubViewModel
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ImageFile" class="control-label"></label>
+    <input asp-for="ImageFile" class="form-control" type="file" />
+    <span asp-validation-for="ImageFile" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Stadium" class="control-label"></label>
+    <input asp-for="Stadium" class="form-control" />
+    <span asp-validation-for="Stadium" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Capacity" class="control-label"></label>
+    <input asp-for="Capacity" class="form-control" />
+    <span asp-validation-for="Capacity" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="HeadCoach" class="control-label"></label>
+    <input asp-for="HeadCoach" class="form-control" />
+    <span asp-validation-for="HeadCoach" class="text-danger"></span>
+</div>
