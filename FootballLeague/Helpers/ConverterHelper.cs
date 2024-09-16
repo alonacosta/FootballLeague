@@ -1,17 +1,18 @@
 ﻿using FootballLeague.Data.Entities;
 using FootballLeague.Models;
+using System;
 
 namespace FootballLeague.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        public Club ToClub(ClubViewModel model, string path, bool isNew)
+        public Club ToClub(ClubViewModel model, Guid imageId, bool isNew)
         {
             return new Club
             {
                 Id = isNew ? 0 : model.Id,
                 Name = model.Name,
-                ImageLogo = path,
+                ImageId = imageId,
                 Stadium = model.Stadium,
                 Capacity = model.Capacity,
                 HeadCoach = model.HeadCoach,
@@ -25,7 +26,7 @@ namespace FootballLeague.Helpers
             {
                 Id = club.Id,
                 Name = club.Name,
-                ImageLogo = club.ImageLogo,
+                ImageId = club.ImageId,
                 Stadium = club.Stadium,
                 Capacity = club.Capacity,
                 HeadCoach = club.HeadCoach,

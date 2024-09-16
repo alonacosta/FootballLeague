@@ -17,17 +17,17 @@ namespace FootballLeague.Controllers
     {    
         private readonly IClubRepository _clubRepository;
         private readonly IUserHelper _userHelper;
-        private readonly IImageHelper _imageHelper;
+        private readonly IBlobHelper _blobHelper;        
         private readonly IConverterHelper _converterHelper;
 
         public ClubsController(IClubRepository clubRepository,
             IUserHelper userHelper,
-            IImageHelper imageHelper,
+            IBlobHelper blobHelper,
             IConverterHelper converterHelper)
         {       
             _clubRepository = clubRepository;
             _userHelper = userHelper;
-            _imageHelper = imageHelper;
+            _blobHelper = blobHelper;           
             _converterHelper = converterHelper;
         }
 
@@ -70,14 +70,13 @@ namespace FootballLeague.Controllers
         {    
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                Guid imageId = Guid.Empty;
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    path = await _imageHelper.UploadImageAsync(model.ImageFile, "clubs");
-                }
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "clubs");                }
 
-                var club = _converterHelper.ToClub(model, path, true);
+                var club = _converterHelper.ToClub(model, imageId, true);
 
                 //TODO: Modify to User with role Representative
                 club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
@@ -116,14 +115,14 @@ namespace FootballLeague.Controllers
             {
                 try
                 {
-                    var path = model.ImageLogo;
+                    Guid imageId = model.ImageId;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {						
-                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "clubs");
+                        imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "clubs");
                     }
 
-                    var club = _converterHelper.ToClub(model, path, false);
+                    var club = _converterHelper.ToClub(model, imageId, false);
 
                     //TODO: Modify to User with role Representative
                     club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");

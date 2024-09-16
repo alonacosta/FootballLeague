@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FootballLeague.Data.Entities
 {
@@ -11,7 +12,7 @@ namespace FootballLeague.Data.Entities
 		public string Name { get; set; }
 
 		[Display(Name = "Logo")]
-		public string? ImageLogo { get; set; }
+		public Guid ImageId { get; set; }
 
 		[Required]
 		public string Stadium { get; set; }
@@ -24,17 +25,9 @@ namespace FootballLeague.Data.Entities
 
 		public User User {get; set;}
 
-		public string ImageFullPath
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(ImageLogo))
-				{
-					return null;
-				}
-				return $"https://localhost:44396{ImageLogo.Substring(1)}";
-			}
-		}
+		public string ImageFullPath => ImageId == Guid.Empty
+			? $"https://footballleague.blob.core.windows.net/default/no-image.jpeg" : $"https://footballleague.blob.core.windows.net/clubs/{ImageId}";
+		
 	}
 }
 
