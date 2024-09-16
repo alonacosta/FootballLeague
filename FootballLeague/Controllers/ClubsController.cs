@@ -17,12 +17,18 @@ namespace FootballLeague.Controllers
     {    
         private readonly IClubRepository _clubRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public ClubsController(IClubRepository clubRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {       
             _clubRepository = clubRepository;
             _userHelper = userHelper;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Clubs
@@ -61,52 +67,25 @@ namespace FootballLeague.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClubViewModel model)
-        {           
-            var path = string.Empty;
-
-            if(model.ImageFile != null && model.ImageFile.Length > 0)
-            {
-				var guid = Guid.NewGuid().ToString();
-				var file = $"{guid}.jpg";
-
-				path = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot\\images\\clubs",
-                    file);
-
-                using(var stream = new FileStream(path, FileMode.Create))
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                }
-
-                path = $"~/images/clubs/{file}";
-            }
-             
-             var club = this.ToClub(model, path);
-
+        {    
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile, "clubs");
+                }
+
+                var club = _converterHelper.ToClub(model, path, true);
+
                 //TODO: Modify to User with role Representative
                 club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
                 await _clubRepository.CreateAsync(club);
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
-        }
-
-        private Club ToClub(ClubViewModel model, string path)
-        {
-            return new Club
-            {
-                Id = model.Id,
-                Name = model.Name,
-                ImageLogo = path,
-                Stadium = model.Stadium,
-                Capacity = model.Capacity,
-                HeadCoach = model.HeadCoach,
-                User = model.User,
-            };
-        }
+        }       
 
         // GET: Clubs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -122,23 +101,9 @@ namespace FootballLeague.Controllers
                 return NotFound();
             }
 
-            var model = this.ToClubViewModel(club); 
+            var model = _converterHelper.ToClubViewModel(club); 
             return View(model);
-        }
-
-        private object ToClubViewModel(Club club)
-        {
-            return new ClubViewModel
-            {
-                Id = club.Id,
-                Name = club.Name,
-                ImageLogo = club.ImageLogo,
-                Stadium = club.Stadium,
-                Capacity = club.Capacity,
-                HeadCoach = club.HeadCoach,
-                User = club.User,
-            };
-        }
+        }           
 
         // POST: Clubs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -154,24 +119,11 @@ namespace FootballLeague.Controllers
                     var path = model.ImageLogo;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
-                    {
-						var guid = Guid.NewGuid().ToString();
-						var file = $"{guid}.jpg";
-
-						path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\images\\clubs",
-                            file);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/clubs/{file}";
+                    {						
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "clubs");
                     }
 
-                    var club = this.ToClub(model, path);
+                    var club = _converterHelper.ToClub(model, path, false);
 
                     //TODO: Modify to User with role Representative
                     club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
