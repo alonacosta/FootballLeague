@@ -1,6 +1,7 @@
 ﻿using FootballLeague.Data.Entities;
 using FootballLeague.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace FootballLeague.Data
 
         public async Task SeedAsync()
         {
-            await _dataContext.Database.EnsureCreatedAsync();
+            await _dataContext.Database.MigrateAsync();
 
             var user = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
             if (user == null)
@@ -51,6 +52,15 @@ namespace FootballLeague.Data
                 AddClub("Sporting CP", "José Alvalade Stadium", "Rúben Amorim");
                 AddClub("FC Porto", "Dragon Stadium", "Vítor Bruno");
                 AddClub("Boavista F.C.", "The Bessa Stadium", "Cristiano Bacci");
+                await _dataContext.SaveChangesAsync();
+            }
+
+            if (!_dataContext.Functions.Any())
+            {
+               await _dataContext.Functions.AddRangeAsync(
+                    new Function { NamePosition = "Representative" },
+                    new Function { NamePosition = "Staff" }
+                    );
                 await _dataContext.SaveChangesAsync();
             }
         }

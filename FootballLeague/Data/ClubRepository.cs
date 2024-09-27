@@ -1,5 +1,7 @@
 ﻿using FootballLeague.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FootballLeague.Data
@@ -16,6 +18,23 @@ namespace FootballLeague.Data
         public IQueryable GetAllClubs()
         {
             return _context.Clubs;
+        }
+
+        public IEnumerable<SelectListItem> GetComboClubs()
+        {
+            var list = _context.Clubs.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a club...)",
+                Value = "0"
+            });
+
+            return list;
         }
 
         // Method that returns Clubs with Users on API

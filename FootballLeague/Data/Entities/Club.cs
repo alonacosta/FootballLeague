@@ -17,7 +17,7 @@ namespace FootballLeague.Data.Entities
 		[Required]
 		public string Stadium { get; set; }
 
-		[Range(1, int.MaxValue, ErrorMessage = "Capacity nust be a positive number.")]
+		[Range(1, int.MaxValue, ErrorMessage = "Capacity must be a positive number.")]
 		public int Capacity { get; set; }
 
 		[Display(Name = "Head Coach")]

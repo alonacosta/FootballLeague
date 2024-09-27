@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballLeague.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240927060949_InitDb")]
+    [Migration("20240927100301_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

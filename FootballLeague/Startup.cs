@@ -46,6 +46,8 @@ namespace FootballLeague
             services.AddScoped<IConverterHelper, ConverterHelper>();
 
             services.AddScoped<IClubRepository, ClubRepository>();
+            services.AddScoped<IFunctionRepository, FunctionRepository>();
+            services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
 
             services.AddControllersWithViews();
         }
