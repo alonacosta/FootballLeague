@@ -16,7 +16,7 @@ namespace FootballLeague.Helpers
                 Stadium = model.Stadium,
                 Capacity = model.Capacity,
                 HeadCoach = model.HeadCoach,
-                User = model.User,
+                //User = model.User,
             };
         }
 
@@ -30,7 +30,7 @@ namespace FootballLeague.Helpers
                 Stadium = club.Stadium,
                 Capacity = club.Capacity,
                 HeadCoach = club.HeadCoach,
-                User = club.User,
+                //User = club.User,
             };
         }
     }

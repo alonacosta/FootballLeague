@@ -45,17 +45,17 @@ namespace FootballLeague.Data
                 }
             }
 
-            if (! _dataContext.Clubs.Any())
+            if (!_dataContext.Clubs.Any())
             {
-                AddClub("SL Benfica", "Sport Lisboa e Benfica's Stadium", "Bruno Lage", user);
-                AddClub("Sporting CP", "José Alvalade Stadium", "Rúben Amorim", user);
-                AddClub("FC Porto", "Dragon Stadium", "Vítor Bruno", user);
-                AddClub("Boavista F.C.", "The Bessa Stadium", "Cristiano Bacci", user);
+                AddClub("SL Benfica", "Sport Lisboa e Benfica's Stadium", "Bruno Lage");
+                AddClub("Sporting CP", "José Alvalade Stadium", "Rúben Amorim");
+                AddClub("FC Porto", "Dragon Stadium", "Vítor Bruno");
+                AddClub("Boavista F.C.", "The Bessa Stadium", "Cristiano Bacci");
                 await _dataContext.SaveChangesAsync();
             }
         }
 
-        private void AddClub(string name, string stadium, string headCoach, User user)
+        private void AddClub(string name, string stadium, string headCoach)
         {
             _dataContext.Clubs.Add(new Entities.Club
             {
@@ -63,7 +63,7 @@ namespace FootballLeague.Data
                 Stadium = stadium,
                 Capacity = _random.Next(40000, 65500),
                 HeadCoach = headCoach,
-                User = user
+                //User = user
             });
         }
     }

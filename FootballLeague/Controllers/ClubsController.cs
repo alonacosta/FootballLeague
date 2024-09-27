@@ -16,17 +16,17 @@ namespace FootballLeague.Controllers
     public class ClubsController : Controller
     {    
         private readonly IClubRepository _clubRepository;
-        private readonly IUserHelper _userHelper;
+        //private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;        
         private readonly IConverterHelper _converterHelper;
 
         public ClubsController(IClubRepository clubRepository,
-            IUserHelper userHelper,
+            //IUserHelper userHelper,
             IBlobHelper blobHelper,
             IConverterHelper converterHelper)
         {       
             _clubRepository = clubRepository;
-            _userHelper = userHelper;
+            //_userHelper = userHelper;
             _blobHelper = blobHelper;           
             _converterHelper = converterHelper;
         }
@@ -79,7 +79,7 @@ namespace FootballLeague.Controllers
                 var club = _converterHelper.ToClub(model, imageId, true);
 
                 //TODO: Modify to User with role Representative
-                club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
+                //club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
                 await _clubRepository.CreateAsync(club);
                 return RedirectToAction(nameof(Index));
             }
@@ -125,7 +125,7 @@ namespace FootballLeague.Controllers
                     var club = _converterHelper.ToClub(model, imageId, false);
 
                     //TODO: Modify to User with role Representative
-                    club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
+                    //club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
                     await _clubRepository.UpdateAsync(club);
                    
                 }
