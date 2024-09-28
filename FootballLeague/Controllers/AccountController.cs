@@ -5,6 +5,7 @@ using FootballLeague.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,16 +18,22 @@ namespace FootballLeague.Controllers
         private readonly IFunctionRepository _functionRepository;
         private readonly IClubRepository _clubRepository;
         private readonly IStaffMemberRepository _staffMemberRepository;
+        private readonly IConverterHelper _converterHelper;
+        private readonly IBlobHelper _blobHelper;
 
         public AccountController(IUserHelper userHelper,
             IFunctionRepository functionRepository,
             IClubRepository clubRepository,
-            IStaffMemberRepository staffMemberRepository)
+            IStaffMemberRepository staffMemberRepository,
+            IConverterHelper converterHelper, 
+            IBlobHelper blobHelper)
         {
             _userHelper = userHelper;
             _functionRepository = functionRepository;
             _clubRepository = clubRepository;
             _staffMemberRepository = staffMemberRepository;
+            _converterHelper = converterHelper;
+            _blobHelper = blobHelper;
         }
 
         public IActionResult Login()
@@ -120,6 +127,98 @@ namespace FootballLeague.Controllers
         {
             return View();
         }
-    
+
+        public async Task<IActionResult> ChangeUser()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var model = new ChangeUserViewModel();
+           
+            if (user != null)
+            {            
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+                model.PhoneNumber = user.PhoneNumber;
+                model.ImageProfile = user.ImageId;
+                model.ImagePath = user.ImageProfileFullPath; 
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        {
+            if (ModelState.IsValid) 
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                Guid imageId = model.ImageProfile;
+
+                if(model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                }
+
+                if (user != null) 
+                {
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.ImageId = imageId;
+                    
+                    var response = await _userHelper.UpdateUserAsync(user);
+
+                    if(response.Succeeded)
+                    {
+                        var updatedUser = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                        model.FirstName = updatedUser.FirstName;
+                        model.LastName = updatedUser.LastName;
+                        model.PhoneNumber = updatedUser.PhoneNumber;
+                        model.ImageProfile = updatedUser.ImageId;
+                        model.ImagePath = updatedUser.ImageProfileFullPath;
+
+                        ModelState.Clear();
+
+                        ViewBag.UserMessage = "User updated!";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                    }
+                }
+            }
+            return View(model);
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "User not found.");
+                }
+            }
+            return this.View(model);
+        }
     }
 }

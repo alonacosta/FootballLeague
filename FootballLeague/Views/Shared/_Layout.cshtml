@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using FootballLeague.Data.Entities
+@using FootballLeague.Helpers
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.DependencyInjection
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,6 +36,15 @@
                     <ul class="nav navbar-nav navbar-right">
                         @if(this.User.Identity.IsAuthenticated)
                         {
+                            var userPhoto = "";
+                            using (var userManager = Context.RequestServices.GetRequiredService<UserManager<User>>())
+                            {
+                                var user = await userManager.FindByNameAsync(this.User.Identity.Name);
+                                userPhoto = user.ImageProfileFullPath;
+                            }
+                            <li class="nav-item">
+                                <img src="@Url.Content(userPhoto)" alt="User pfoto" class="img-fluid rounded" style="width:40px;height:40px;max-width:100%;max-height:auto;" />
+                            </li>
                              <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a>
                             </li>

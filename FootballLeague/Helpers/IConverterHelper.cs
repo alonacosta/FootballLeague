@@ -10,5 +10,9 @@ namespace FootballLeague.Helpers
         Club ToClub(ClubViewModel model, Guid imageId, bool isNew);
 
         ClubViewModel ToClubViewModel(Club club);
+
+        //UserViewModel ToUserViewModel(User user);
+        //User ToUser(UserViewModel model, Guid imageId, bool isNew);
+        
     }
 }

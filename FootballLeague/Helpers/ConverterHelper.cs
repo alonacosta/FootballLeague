@@ -15,8 +15,7 @@ namespace FootballLeague.Helpers
                 ImageId = imageId,
                 Stadium = model.Stadium,
                 Capacity = model.Capacity,
-                HeadCoach = model.HeadCoach,
-                //User = model.User,
+                HeadCoach = model.HeadCoach,                
             };
         }
 
@@ -29,9 +28,33 @@ namespace FootballLeague.Helpers
                 ImageId = club.ImageId,
                 Stadium = club.Stadium,
                 Capacity = club.Capacity,
-                HeadCoach = club.HeadCoach,
-                //User = club.User,
+                HeadCoach = club.HeadCoach,               
             };
         }
+
+        //public UserViewModel ToUserViewModel(User user)
+        //{
+        //    return new UserViewModel
+        //    {
+        //        Id = user.Id,
+        //        FirstName = user.FirstName,
+        //        LastName = user.LastName,
+        //        PhoneNumber = user.PhoneNumber,
+        //        ImageId = user.ImageId,                 
+        //    };
+        //}        
+
+        //public User ToUser(UserViewModel model, Guid imageId, bool isNew)
+        //{
+        //    return new User
+        //    {
+        //       Id = isNew ? "" : model.Id,
+        //       FirstName = model.FirstName,
+        //       LastName = model.LastName,
+        //       PhoneNumber = model.PhoneNumber,
+        //       ImageId = imageId,
+        //    };
+        //}
+        
     }
 }

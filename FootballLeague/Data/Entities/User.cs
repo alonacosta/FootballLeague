@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FootballLeague.Data.Entities
@@ -13,6 +14,12 @@ namespace FootballLeague.Data.Entities
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+        public Guid ImageId { get; set; }
+
+        public string ImageProfileFullPath => ImageId == Guid.Empty
+           ? $"https://footballleague.blob.core.windows.net/default/no-profile.png"
+           : $"https://footballleague.blob.core.windows.net/users/{ImageId}";
 
     }
 }
