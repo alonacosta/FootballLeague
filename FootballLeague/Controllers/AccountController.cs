@@ -85,6 +85,10 @@ namespace FootballLeague.Controllers
         {
             if (ModelState.IsValid) 
             {
+                var function = await _functionRepository.GetByIdAsync(model.FunctionId);               
+               
+                await _userHelper.CheckRoleAsync(function.NamePosition);                
+               
                 var user = await _userHelper.GetUserByEmailAsync(model.Username); 
 
                 if (user == null)
@@ -105,6 +109,8 @@ namespace FootballLeague.Controllers
                         return View(model);
                     }
 
+                    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+
                     var staffMember = new StaffMember
                     {
                         User = user,
@@ -117,7 +123,13 @@ namespace FootballLeague.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Already exists the user with this email");
                     return View(model);
-                }               
+                }
+
+                var isInRole = await _userHelper.IsUserInRoleAsync(user, function.NamePosition);
+                if (!isInRole) 
+                {
+                    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+                }
             }
 
             return RedirectToAction(nameof(GetSuccess));

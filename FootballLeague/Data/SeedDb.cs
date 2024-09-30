@@ -26,6 +26,10 @@ namespace FootballLeague.Data
         {
             await _dataContext.Database.MigrateAsync();
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Representative");
+            await _userHelper.CheckRoleAsync("Staff");
+
             var user = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
             if (user == null)
             {
@@ -44,7 +48,11 @@ namespace FootballLeague.Data
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
+
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
 
             if (!_dataContext.Clubs.Any())
             {
