@@ -146,12 +146,8 @@ namespace FootballLeague.Controllers
             var model = new ChangeUserViewModel();
            
             if (user != null)
-            {            
-                model.FirstName = user.FirstName;
-                model.LastName = user.LastName;
-                model.PhoneNumber = user.PhoneNumber;
-                model.ImageProfile = user.ImageId;
-                model.ImagePath = user.ImageProfileFullPath; 
+            {  
+                model = _converterHelper.ToChangeUserViewModel(user);                
             }
             return View(model);
         }
@@ -183,11 +179,7 @@ namespace FootballLeague.Controllers
                     {
                         var updatedUser = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
-                        model.FirstName = updatedUser.FirstName;
-                        model.LastName = updatedUser.LastName;
-                        model.PhoneNumber = updatedUser.PhoneNumber;
-                        model.ImageProfile = updatedUser.ImageId;
-                        model.ImagePath = updatedUser.ImageProfileFullPath;
+                        model = _converterHelper.ToChangeUserViewModel(updatedUser);                        
 
                         ModelState.Clear();
 

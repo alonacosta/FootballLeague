@@ -32,29 +32,17 @@ namespace FootballLeague.Helpers
             };
         }
 
-        //public UserViewModel ToUserViewModel(User user)
-        //{
-        //    return new UserViewModel
-        //    {
-        //        Id = user.Id,
-        //        FirstName = user.FirstName,
-        //        LastName = user.LastName,
-        //        PhoneNumber = user.PhoneNumber,
-        //        ImageId = user.ImageId,                 
-        //    };
-        //}        
-
-        //public User ToUser(UserViewModel model, Guid imageId, bool isNew)
-        //{
-        //    return new User
-        //    {
-        //       Id = isNew ? "" : model.Id,
-        //       FirstName = model.FirstName,
-        //       LastName = model.LastName,
-        //       PhoneNumber = model.PhoneNumber,
-        //       ImageId = imageId,
-        //    };
-        //}
+        public ChangeUserViewModel ToChangeUserViewModel(User user)
+        {
+            return new ChangeUserViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                ImageProfile = user.ImageId,
+                ImagePath = user.ImageProfileFullPath,
+            };
+        }        
         
     }
 }

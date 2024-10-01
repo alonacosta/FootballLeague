@@ -7,6 +7,7 @@ namespace FootballLeague.Helpers
 {
     public interface IConverterHelper
     {
+        ChangeUserViewModel ToChangeUserViewModel(User user);
         Club ToClub(ClubViewModel model, Guid imageId, bool isNew);
 
         ClubViewModel ToClubViewModel(Club club);        
