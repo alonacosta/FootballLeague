@@ -132,7 +132,8 @@ namespace FootballLeague.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(GetSuccess));
+            return RedirectToAction("Index", "Users"); 
+            //RedirectToAction(nameof(GetSuccess));
         }
 
         public IActionResult GetSuccess()

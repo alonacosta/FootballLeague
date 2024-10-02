@@ -10,6 +10,7 @@ using FootballLeague.Data.Entities;
 using FootballLeague.Helpers;
 using FootballLeague.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballLeague.Controllers
 {
@@ -55,17 +56,21 @@ namespace FootballLeague.Controllers
             return View(club);
         }
 
+
         // GET: Clubs/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
+       
         // POST: Clubs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ClubViewModel model)
         {    
             if (ModelState.IsValid)
@@ -84,9 +89,10 @@ namespace FootballLeague.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
-        }       
+        }
 
         // GET: Clubs/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,6 +115,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ClubViewModel model)
         {  
             if (ModelState.IsValid)
@@ -146,6 +153,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Clubs/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,6 +174,7 @@ namespace FootballLeague.Controllers
         // POST: Clubs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var club = await _clubRepository.GetByIdAsync(id);

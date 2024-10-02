@@ -1,5 +1,6 @@
 ﻿using FootballLeague.Data;
 using FootballLeague.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,23 +9,21 @@ using System.Threading.Tasks;
 
 namespace FootballLeague.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly IUserRepository _userRepository;
+       
         private readonly IStaffMemberRepository _staffMemberRepository;
 
-        public UsersController(IUserRepository userRepository,
-            IStaffMemberRepository staffMemberRepository) 
+        public UsersController(IStaffMemberRepository staffMemberRepository) 
         {
-            _userRepository = userRepository;
+           
             _staffMemberRepository = staffMemberRepository;
         }
 
         // GET: Users
         public async Task<IActionResult> Index()
-        {
-            //Guid imageId = Guid.NewGuid();
-          
+        {            
             var staffMembers = await _staffMemberRepository.GetAllStaffMembers().ToListAsync();
 
             var userViewModels = staffMembers.Select(staff => new UserViewModel
