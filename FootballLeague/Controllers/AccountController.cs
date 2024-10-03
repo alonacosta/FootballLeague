@@ -49,17 +49,20 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid) 
-            {
+            {            
                 var result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded) 
                 {
+                    //ViewBag.UserPhoto = await GetUserProfileImage();
+
                     if(this.Request.Query.Keys.Contains("ReturnUrl"))
                     {
                         return Redirect(this.Request.Query["ReturnUrl"].First());
                     }
                     return RedirectToAction("Index", "Home");
                 }
-            }
+            }            
+
             this.ModelState.AddModelError(string.Empty, "Failed to login");
             return View(model);
         }
@@ -225,5 +228,6 @@ namespace FootballLeague.Controllers
             }
             return this.View(model);
         }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using FootballLeague.Models;
+﻿using FootballLeague.Helpers;
+using FootballLeague.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,14 +13,15 @@ namespace FootballLeague.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+       
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            _logger = logger;          
         }
 
         public IActionResult Index()
-        {
+        {            
             return View();
         }
 

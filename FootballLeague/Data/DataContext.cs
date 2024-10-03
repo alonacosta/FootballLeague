@@ -9,6 +9,8 @@ namespace FootballLeague.Data
 		public DbSet<Club> Clubs { get; set; }
         public DbSet<Function> Functions { get; set; }
 		public DbSet<StaffMember> StaffMembers { get; set; }
+		public DbSet<Player> Players { get; set; }
+		public DbSet<Position> Positions { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
 		{
 		}

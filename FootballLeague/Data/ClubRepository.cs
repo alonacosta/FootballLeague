@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootballLeague.Data
 {
@@ -35,7 +36,7 @@ namespace FootballLeague.Data
             });
 
             return list;
-        }
+        }        
 
         // Method that returns Clubs with Users on API
         //public IQueryable GetAllWithUsers()

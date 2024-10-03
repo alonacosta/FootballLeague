@@ -1,4 +1,5 @@
 ﻿using FootballLeague.Data;
+using FootballLeague.Helpers;
 using FootballLeague.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace FootballLeague.Controllers
     {
        
         private readonly IStaffMemberRepository _staffMemberRepository;
+        
 
         public UsersController(IStaffMemberRepository staffMemberRepository) 
         {
            
             _staffMemberRepository = staffMemberRepository;
+           
         }
 
         // GET: Users
@@ -40,5 +43,7 @@ namespace FootballLeague.Controllers
 
             return View(userViewModels);
         }
+
+
     }
 }

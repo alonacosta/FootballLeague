@@ -76,5 +76,14 @@ namespace FootballLeague.Helpers
         {
             return await _userManager.UpdateAsync(user);
         }
+
+        public string GetUserProfileImage(User user)
+        {            
+            if (user != null)
+            {
+                return user.ImageProfileFullPath;
+            }
+            return "https://footballleague.blob.core.windows.net/default/no-profile.png";
+        }
     }
 }

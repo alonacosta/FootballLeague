@@ -41,21 +41,30 @@
                                 </ul>
                             </li>
                         }
+                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Representative"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Representative</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Clubs" asp-action="ClubDetails">Club</a></li>
+                                     <li><a class="dropdown-item" asp-area="" asp-controller="Clubs" asp-action="ClubDetails">Players</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Positions" asp-action="Index">Positions</a></li>    
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Positions" asp-action="Index">Player Positions</a></li>        
+                                </ul>
+                            </li>
+                        }
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        
                         @if(this.User.Identity.IsAuthenticated)
                         {
-                            var userPhoto = "";
-                            using (var userManager = Context.RequestServices.GetRequiredService<UserManager<User>>())
-                            {
-                                var user = await userManager.FindByNameAsync(this.User.Identity.Name);
-                                userPhoto = user.ImageProfileFullPath;
-                            }
+                            var userPhoto = (string)Context.Items["UserPhoto"] ?? "https://footballleague.blob.core.windows.net/default/no-profile.png";
                             <li class="nav-item">
+                               
                                 <img src="@Url.Content(userPhoto)" alt="User pfoto" class="img-fluid rounded" style="width:40px;height:40px;max-width:100%;max-height:auto;" />
                             </li>
                              <li class="nav-item">

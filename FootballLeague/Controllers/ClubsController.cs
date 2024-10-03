@@ -17,19 +17,22 @@ namespace FootballLeague.Controllers
     public class ClubsController : Controller
     {    
         private readonly IClubRepository _clubRepository;
-        //private readonly IUserHelper _userHelper;
+        private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;        
         private readonly IConverterHelper _converterHelper;
+        private readonly IStaffMemberRepository _staffMemberRepository;
 
         public ClubsController(IClubRepository clubRepository,
-            //IUserHelper userHelper,
+            IUserHelper userHelper,
             IBlobHelper blobHelper,
-            IConverterHelper converterHelper)
+            IConverterHelper converterHelper,
+            IStaffMemberRepository staffMemberRepository)
         {       
             _clubRepository = clubRepository;
-            //_userHelper = userHelper;
+            _userHelper = userHelper;
             _blobHelper = blobHelper;           
             _converterHelper = converterHelper;
+            _staffMemberRepository = staffMemberRepository;
         }
 
         // GET: Clubs
@@ -92,7 +95,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Clubs/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Representative")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -115,7 +118,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Representative")]
         public async Task<IActionResult> Edit(ClubViewModel model)
         {  
             if (ModelState.IsValid)
@@ -147,6 +150,12 @@ namespace FootballLeague.Controllers
                         throw;
                     }
                 }
+
+                if (User.IsInRole("Representative"))
+                {
+                    return RedirectToAction("ClubDetails", new { id = model.Id });
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
@@ -181,6 +190,29 @@ namespace FootballLeague.Controllers
             await _clubRepository.DeleteAsync(club);
             
             return RedirectToAction(nameof(Index));
-        }        
+        }   
+        
+        public async Task<IActionResult> ClubDetails()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+            var staffMember = await _staffMemberRepository.GetStaffMember(user);
+            if (staffMember == null)
+            {
+                return NotFound();
+            }
+
+            var clubId = staffMember.ClubId;
+
+            var club = await _clubRepository.GetByIdAsync(clubId);
+            if (club == null) 
+            { 
+                return NotFound(); 
+            }
+
+            return View(club);
+
+            //return this.RedirectToAction("Details", new { Id = clubId });            
+        }
     }
 }

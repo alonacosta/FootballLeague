@@ -1,5 +1,6 @@
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
+using FootballLeague.Filters;
 using FootballLeague.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,8 +50,12 @@ namespace FootballLeague
             services.AddScoped<IFunctionRepository, FunctionRepository>();
             services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPositionRepository, PositionRepository>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<UserProfileImageFilter>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 ﻿using FootballLeague.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootballLeague.Data
 {
@@ -21,5 +22,17 @@ namespace FootballLeague.Data
                 .Include(s => s.User)        
                 .AsNoTracking();
         }
+
+        public async Task<StaffMember> GetStaffMember(User user)
+        {
+            return _context.StaffMembers
+                .Include(s => s.Club)
+                .Include(s => s.Function)
+                .Include(s => s.User)
+                .Where(s => s.User.Id == user.Id)
+                .FirstOrDefault();
+        }
+
+        
     }
 }

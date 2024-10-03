@@ -71,6 +71,17 @@ namespace FootballLeague.Data
                     );
                 await _dataContext.SaveChangesAsync();
             }
+
+            if(!_dataContext.Positions.Any())
+            {
+                await _dataContext.Positions.AddRangeAsync(
+                    new Position { Name = "Goalkeeper" },
+                    new Position { Name = "Defence" },
+                    new Position { Name = "Attack" },
+                    new Position { Name = "Midfield" }
+                    );
+                await _dataContext.SaveChangesAsync();
+            }
         }
 
         private void AddClub(string name, string stadium, string headCoach)
@@ -80,8 +91,7 @@ namespace FootballLeague.Data
                 Name = name,
                 Stadium = stadium,
                 Capacity = _random.Next(40000, 65500),
-                HeadCoach = headCoach,
-                //User = user
+                HeadCoach = headCoach,                
             });
         }
     }
