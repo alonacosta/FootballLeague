@@ -14,6 +14,11 @@ namespace FootballLeague.Data.Entities
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
 
+
+        [Display(Name = "Position")]
+        public int PositionId { get; set; }
+        public Position Position { get; set; }
+
         [Display(Name = "Club")]
         public int ClubId { get; set; }
         public Club Club { get; set; }

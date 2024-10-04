@@ -1,5 +1,6 @@
 ﻿using FootballLeague.Data.Entities;
 using FootballLeague.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace FootballLeague.Helpers
@@ -42,7 +43,31 @@ namespace FootballLeague.Helpers
                 ImageProfile = user.ImageId,
                 ImagePath = user.ImageProfileFullPath,
             };
-        }        
+        } 
+        
+        public Player ToPlayer(PlayerViewModel model, Guid imageId, int clubId, bool isNew)
+        {
+            return new Player
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                ImageId = imageId,
+                ClubId = clubId,               
+                PositionId = model.PositionId,                
+            };
+        }
+
+        public PlayerViewModel ToPlayerViewModel(Player player) 
+        {
+            return new PlayerViewModel
+            { 
+                Id = player.Id,
+                Name = player.Name,
+                ImageId = player.ImageId,
+                ClubId = player.ClubId,
+                PositionId = player.PositionId,
+            };
+        }
         
     }
 }

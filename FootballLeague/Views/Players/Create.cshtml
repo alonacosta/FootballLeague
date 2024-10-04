@@ -1,0 +1,38 @@
+﻿@model FootballLeague.Models.PlayerViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create new Player</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_Players" />
+            <div class="form-group">
+               <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create</button>
+                <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#PositionId").change(function () {
+                var PositionId = $(this).val();
+            });
+           
+        });
+    </script>
+}
+

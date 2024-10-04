@@ -7,6 +7,6 @@ namespace FootballLeague.Data
     public interface IStaffMemberRepository : IGenericRepository<StaffMember>
     {
         IQueryable<StaffMember> GetAllStaffMembers();
-        Task<StaffMember> GetStaffMember(User user);
+        Task<StaffMember> GetStaffMemberAsync(User user);
     }
 }

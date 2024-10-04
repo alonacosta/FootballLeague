@@ -196,7 +196,7 @@ namespace FootballLeague.Controllers
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
-            var staffMember = await _staffMemberRepository.GetStaffMember(user);
+            var staffMember = await _staffMemberRepository.GetStaffMemberAsync(user);
             if (staffMember == null)
             {
                 return NotFound();

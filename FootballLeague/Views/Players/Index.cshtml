@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FootballLeague.Data.Entities.Player>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Players </h2>
+
+<p class="mt-3">
+    <a asp-action="Create" class="btn btn-primary"><i class="fas fa-save"></i> Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>           
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.ImagePlayerFullPath)" alt="Image" style="width:50px;height:50px;max-width:100%;height:auto;" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>            
+            <td>
+                @Html.DisplayFor(modelItem => item.Position.Name)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i></a>                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

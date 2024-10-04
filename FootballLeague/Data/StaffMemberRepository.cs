@@ -23,14 +23,14 @@ namespace FootballLeague.Data
                 .AsNoTracking();
         }
 
-        public async Task<StaffMember> GetStaffMember(User user)
+        public async Task<StaffMember> GetStaffMemberAsync(User user)
         {
-            return _context.StaffMembers
+            return await _context.StaffMembers
                 .Include(s => s.Club)
                 .Include(s => s.Function)
                 .Include(s => s.User)
                 .Where(s => s.User.Id == user.Id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
         

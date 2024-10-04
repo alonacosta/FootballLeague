@@ -1,0 +1,42 @@
+﻿@model FootballLeague.Models.PlayerViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Player</h2>
+
+<hr />
+<div class="row d-flex align-items-start">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageId" />
+            <partial name="_Players" />
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+                <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 ml-5">
+			<img src="@Url.Content(Model.ImagePlayerFullPath)" alt="Image" style="width:300px;height:300px;max-width:100%;height:auto;" />
+	</div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#PositionId").change(function () {
+                var PositionId = $(this).val();
+            });
+
+        });
+    </script>
+}
+

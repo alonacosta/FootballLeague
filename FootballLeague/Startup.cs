@@ -51,6 +51,7 @@ namespace FootballLeague
             services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
 
             services.AddControllersWithViews(options =>
             {

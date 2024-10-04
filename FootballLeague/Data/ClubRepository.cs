@@ -36,12 +36,16 @@ namespace FootballLeague.Data
             });
 
             return list;
-        }        
+        }         
 
-        // Method that returns Clubs with Users on API
-        //public IQueryable GetAllWithUsers()
-        //{
-        //	return _context.Clubs.Include(c => c.User);
-        //}
+        public async Task<Club> GetClubDoPlayerAsync(Player player)
+        {
+            return await _context.Clubs
+                .Include(p => p.Players)
+                .Where(p => p.Id == player.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        
     }
 }
