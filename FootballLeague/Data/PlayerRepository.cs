@@ -30,7 +30,15 @@ namespace FootballLeague.Data
                 .Where(c => c.ClubId == clubId);                
         }
 
-         public async Task<Player> GetPlayerByIdAsync(int id)
+        public IQueryable<Player> GetAllPlayersDoClubWithPosition(int clubId, int positionId)
+        {
+            return _context.Players
+                .Include(c => c.Club)
+                .Include(p => p.Position)
+                .Where(c => c.ClubId == clubId && c.PositionId == positionId);
+        }
+
+        public async Task<Player> GetPlayerByIdAsync(int id)
          {
             return await _context.Players
                 .Include(c => c.Club)

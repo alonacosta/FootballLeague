@@ -12,13 +12,13 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="align-middle py-1">
                 @Html.DisplayNameFor(model => model.ImageId)
             </th>
-            <th>
+            <th class="align-middle py-1">
                 @Html.DisplayNameFor(model => model.Name)
             </th>           
-            <th>
+            <th class="align-middle py-1">
                 @Html.DisplayNameFor(model => model.Position)
             </th>
             <th></th>
@@ -27,16 +27,16 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                <img src="@Url.Content(item.ImagePlayerFullPath)" alt="Image" style="width:50px;height:50px;max-width:100%;height:auto;" />
+            <td class="align-middle py-1">
+                <img src="@Url.Content(item.ImagePlayerFullPath)" alt="Image" style="width:40px;height:40px;max-width:100%;height:auto;" />
             </td>
-            <td>
+            <td class="align-middle py-1">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>            
-            <td>
+            <td class="align-middle py-1">
                 @Html.DisplayFor(modelItem => item.Position.Name)
             </td>
-            <td>
+            <td class="align-middle py-1">
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i></a>                

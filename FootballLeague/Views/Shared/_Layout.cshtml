@@ -29,9 +29,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Clubs" asp-action="Index">Clubs</a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="Team">Team</a>
-                        </li>
+                        </li> *@
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {

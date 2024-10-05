@@ -267,6 +267,59 @@ namespace FootballLeague.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        //GET
+        //[HttpGet("GetTeam/{id}")]
+        public async Task<IActionResult> GetTeam(int? id)
+        {           
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var club = await _clubRepository.GetByIdAsync(id.Value);           
+
+            var teamViewModels = new List<TeamViewModel>();
+
+            var positions = _positionRepository.GetAll();
+            var players = new List<Player>();
+
+            foreach (var position in positions)
+            {
+                players = _playerRepository
+                          .GetAllPlayersDoClubWithPosition(club.Id, position.Id)
+                          .OrderBy(p => p.Name)
+                          .ToList();                
+
+                if (players == null)
+                {
+                    return NotFound();
+                }
+
+                foreach (var player in players)
+                {
+                    var model = new TeamViewModel
+                    {
+                        ImageId = player.ImageId,
+                        ImageFullPath = player.ImagePlayerFullPath,
+                        Player = player,
+                        Club = club,
+                        Position = player.Position,
+                        PositionId = player.PositionId,
+                        PositionName = player.Position.Name,
+                    };
+
+                    teamViewModels.Add(model);
+                }
+            }
+
+            if (!teamViewModels.Any())
+            {
+                return NotFound();
+            }
+
+            return View(teamViewModels);
+        }
+
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.Id == id);

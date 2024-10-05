@@ -21,19 +21,21 @@ namespace FootballLeague.Controllers
         private readonly IBlobHelper _blobHelper;        
         private readonly IConverterHelper _converterHelper;
         private readonly IStaffMemberRepository _staffMemberRepository;
+		
 
-        public ClubsController(IClubRepository clubRepository,
+		public ClubsController(IClubRepository clubRepository,
             IUserHelper userHelper,
             IBlobHelper blobHelper,
             IConverterHelper converterHelper,
-            IStaffMemberRepository staffMemberRepository)
+            IStaffMemberRepository staffMemberRepository
+            )
         {       
             _clubRepository = clubRepository;
             _userHelper = userHelper;
             _blobHelper = blobHelper;           
             _converterHelper = converterHelper;
-            _staffMemberRepository = staffMemberRepository;
-        }
+            _staffMemberRepository = staffMemberRepository;			
+		}
 
         // GET: Clubs
         public IActionResult Index()
@@ -59,14 +61,12 @@ namespace FootballLeague.Controllers
             return View(club);
         }
 
-
         // GET: Clubs/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
-
        
         // POST: Clubs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -213,6 +213,6 @@ namespace FootballLeague.Controllers
             return View(club);
 
             //return this.RedirectToAction("Details", new { Id = clubId });            
-        }
-    }
+        }		
+	}
 }

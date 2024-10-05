@@ -4,7 +4,13 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Club Details</h1>
+<div class="d-flex">
+	<h2>Club Details</h2>
+	<div>
+		<a asp-controller="Players" asp-action="GetTeam" asp-route-id="@Model.Id" class="btn btn-outline-info px-2 ml-5"><i class="fas fa-users"></i> Team</a>
+	</div>
+</div>
+
 <hr />
 <div class="row mt-3">
     <div class="col-md-5">		

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FootballLeague.Models.TeamViewModel>
+
+@{
+    ViewData["Title"] = "Team";
+}
+
+<div class="container mt-4">
+    <h2>Team Details</h2>
+    <hr />
+
+    <div class="container mt-4">
+        @foreach(var item in Model.Select(m => m.PositionName).Distinct())
+        {            
+            <div class="mb-4">
+                <h6 class="text-uppercase">@item</h6>
+                <ul class="list-group">
+                        @foreach (var player in Model.Where(p => p.PositionName == item))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+                            <div class="d-flex align-items-center">
+                                <img src="@player.ImageFullPath" alt="@player.Player.Name" class="me-3 mr-2" style="width: 35px; height: 35px;">
+                                <span>@player.Player.Name</span>
+                            </div>
+                      
+                        </li>
+                    }
+                </ul>
+            </div>
+        }          
+    </div>     
+</div>
+
