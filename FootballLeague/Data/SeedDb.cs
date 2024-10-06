@@ -28,7 +28,7 @@ namespace FootballLeague.Data
 
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Representative");
-            await _userHelper.CheckRoleAsync("Staff");
+            await _userHelper.CheckRoleAsync("SportsSecretary");
 
             var user = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
             if (user == null)
@@ -67,6 +67,7 @@ namespace FootballLeague.Data
             {
                await _dataContext.Functions.AddRangeAsync(
                     new Function { NamePosition = "Representative" },
+                    new Function { NamePosition = "SportsSecretary" },
                     new Function { NamePosition = "Staff" }
                     );
                 await _dataContext.SaveChangesAsync();

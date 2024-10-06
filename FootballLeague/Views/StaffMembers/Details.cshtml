@@ -1,0 +1,42 @@
+﻿@model FootballLeague.Models.RoleOfStaffMemberViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Staff Member Details</h2>
+<hr />
+<div class="row d-flex align-items-center">
+    <div class="col-md-3">
+        <img src="@Url.Content(Model.ImagePath)" alt="Image" style="width:130px;height:130px;max-width:100%;height:auto;" />
+    </div>
+
+    <div class="col-md-9">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FunctionName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FunctionName)
+            </dd>
+        </dl>
+    </div>
+
+</div>
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+    <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+</div>
+
+

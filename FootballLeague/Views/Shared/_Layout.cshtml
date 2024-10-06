@@ -28,10 +28,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Clubs" asp-action="Index">Clubs</a>
-                        </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="Team">Team</a>
-                        </li> *@
+                        </li>                       
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {
@@ -50,9 +47,10 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Representative</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Clubs" asp-action="ClubDetails">Club</a></li>
-                                     <li><a class="dropdown-item" asp-area="" asp-controller="Players" asp-action="Index">Players</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Positions" asp-action="Index">Positions</a></li>    
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Players" asp-action="PlayerPosition">Player Positions</a></li>        
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Players" asp-action="Index">Players</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Positions" asp-action="Index">Positions</a></li>                                  
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="StaffMembers" asp-action="Index">Staff</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Functions" asp-action="Index">Staff function</a></li>
                                 </ul>
                             </li>
                         }

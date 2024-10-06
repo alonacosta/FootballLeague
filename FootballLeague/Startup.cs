@@ -2,6 +2,7 @@ using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using FootballLeague.Filters;
 using FootballLeague.Helpers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
 namespace FootballLeague
 {
@@ -52,6 +54,27 @@ namespace FootballLeague
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnValidatePrincipal = async context =>
+                {
+                    var userPrincipal = context.Principal;
+                    if (userPrincipal != null)
+                    {
+                        var userId = userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+
+                        var user = await userManager.FindByIdAsync(userId);
+                        if (user == null)
+                        {
+                            // Usuário não existe mais, rejeitar a sessão
+                            context.RejectPrincipal();
+                            await context.HttpContext.SignOutAsync();
+                        }
+                    }
+                };
+            });
 
             services.AddControllersWithViews(options =>
             {
