@@ -11,11 +11,10 @@ using FootballLeague.Data.Entities;
 namespace FootballLeague.Controllers
 {
     public class FunctionsController : Controller
-    {
-        private readonly DataContext _context;
+    {     
         private readonly IFunctionRepository _functionRepository;
 
-        public FunctionsController(DataContext context, IFunctionRepository functionRepository)
+        public FunctionsController(IFunctionRepository functionRepository)
         {           
            _functionRepository = functionRepository;
         }

@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FootballLeague</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+     <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" />
      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -23,12 +24,15 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Clubs" asp-action="Index">Clubs</a>
-                        </li>                       
+                        </li>  
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Rounds" asp-action="Index">Rounds</a>
+                        </li>  
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {
@@ -54,6 +58,15 @@
                                 </ul>
                             </li>
                         }
+                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sports Secretary</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Rounds" asp-action="Index">Rounds</a></li>                                   
+                                 </ul>
+                            </li>
+                        } 
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -99,6 +112,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/flatpickr/flatpickr.min.js"></script>   
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

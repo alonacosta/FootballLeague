@@ -54,6 +54,7 @@ namespace FootballLeague
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IRoundRepository, RoundRepository>();
 
             services.ConfigureApplicationCookie(options =>
             {

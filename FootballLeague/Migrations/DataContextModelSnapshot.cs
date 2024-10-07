@@ -64,6 +64,73 @@ namespace FootballLeague.Migrations
                     b.ToTable("Functions");
                 });
 
+            modelBuilder.Entity("FootballLeague.Data.Entities.Incident", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("EventTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OccurenceName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MatchId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Incidents");
+                });
+
+            modelBuilder.Entity("FootballLeague.Data.Entities.Match", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AwayScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AwayTeam")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HomeScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HomeTeam")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RoundId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoundId");
+
+                    b.ToTable("Matchers");
+                });
+
             modelBuilder.Entity("FootballLeague.Data.Entities.Player", b =>
                 {
                     b.Property<int>("Id")
@@ -109,6 +176,32 @@ namespace FootballLeague.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Positions");
+                });
+
+            modelBuilder.Entity("FootballLeague.Data.Entities.Round", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("DateEnd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rounds");
                 });
 
             modelBuilder.Entity("FootballLeague.Data.Entities.StaffMember", b =>
@@ -345,6 +438,34 @@ namespace FootballLeague.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("FootballLeague.Data.Entities.Incident", b =>
+                {
+                    b.HasOne("FootballLeague.Data.Entities.Match", "Match")
+                        .WithMany("Incidents")
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FootballLeague.Data.Entities.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.Navigation("Match");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("FootballLeague.Data.Entities.Match", b =>
+                {
+                    b.HasOne("FootballLeague.Data.Entities.Round", "Round")
+                        .WithMany("Matches")
+                        .HasForeignKey("RoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Round");
+                });
+
             modelBuilder.Entity("FootballLeague.Data.Entities.Player", b =>
                 {
                     b.HasOne("FootballLeague.Data.Entities.Club", "Club")
@@ -443,6 +564,16 @@ namespace FootballLeague.Migrations
             modelBuilder.Entity("FootballLeague.Data.Entities.Club", b =>
                 {
                     b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("FootballLeague.Data.Entities.Match", b =>
+                {
+                    b.Navigation("Incidents");
+                });
+
+            modelBuilder.Entity("FootballLeague.Data.Entities.Round", b =>
+                {
+                    b.Navigation("Matches");
                 });
 #pragma warning restore 612, 618
         }
