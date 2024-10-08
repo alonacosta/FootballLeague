@@ -1,4 +1,5 @@
 ﻿using FootballLeague.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,5 +12,6 @@ namespace FootballLeague.Data
         Task<List<Match>> GetMatchesWithRound(int roundId);
         Task<Match> GetMatchByIdAsync(int id);
         Task<Match> UpdateMatchAsync(Match match);
+        IEnumerable<SelectListItem> GetComboMatches();
     }
 }

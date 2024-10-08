@@ -21,6 +21,10 @@ namespace FootballLeague.Data.Entities
         public DateTime EventTime { get; set; }
 
         public Match Match { get; set; }
+
+        [Required] 
+        [Display(Name = "Player")]
+        public int PlayerId { get; set; }
         public Player Player { get; set; }
     }
 }

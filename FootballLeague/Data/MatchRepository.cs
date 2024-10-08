@@ -1,4 +1,5 @@
 ﻿using FootballLeague.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,23 @@ namespace FootballLeague.Data
             await _context.SaveChangesAsync();
 
             return existingMatch;       
+        }
+
+        public IEnumerable<SelectListItem> GetComboMatches()
+        {
+            var list = _context.Matches.Select(c => new SelectListItem
+            {
+                Text = $"{c.HomeTeam} - {c.AwayTeam}",
+                Value = c.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a match...)",
+                Value = "0"
+            });
+
+            return list;
         }
     }
 }

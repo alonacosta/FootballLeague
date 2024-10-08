@@ -1,0 +1,45 @@
+﻿@model FootballLeague.Data.Entities.Incident
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete Incident</h1>
+
+<h6>Are you sure you want to delete this?</h6>
+<hr />
+<div>    
+    
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Player)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Player.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Match.MatchName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Match.MatchName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OccurenceName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OccurenceName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EventTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EventTime)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+        <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+    </form>
+</div>

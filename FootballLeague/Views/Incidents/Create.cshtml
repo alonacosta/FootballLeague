@@ -1,0 +1,112 @@
+﻿@model FootballLeague.Models.IncidentViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create new incident</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Match.Id" id="MatchId" />
+             <div class="form-group">
+                <label asp-for="Match.MatchName" class="control-label"></label>
+                <input asp-for="Match.MatchName"  class="form-control" readonly />
+                <span asp-validation-for="Match.MatchName" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="PlayerId" class="control-label"></label>
+                <select asp-for="PlayerId" asp-items="Model.Players" class="form-control"></select>
+                <span asp-validation-for="PlayerId" class="text-danger"></span>
+            </div>           
+            <div class="form-group">
+                <label asp-for="OccurenceName" class="control-label"></label>
+                <input asp-for="OccurenceName" class="form-control" />
+                <span asp-validation-for="OccurenceName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventTime" class="control-label"></label>
+                <div class="input-group">
+                    <input asp-for="EventTime" id="EventTime" class="form-control" data-toggle="flatpickr" placeholder="Select Date..." />
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <span asp-validation-for="EventTime" class="text-danger"></span>
+                </div>
+            </div>            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create</button>
+                <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $("#Match\\..MatchName").change(function () {
+                $("#PlayerId").empty();
+                $.ajax({
+                    url: '@Url.Action("GetPlayersAsync", "Incidents")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { matchName: $(this).val() },
+                    success: function (players) {                        
+                        $("#PlayerId").append('<option value="0">(Select a player...)</option>');
+                        $.each(players, function (p, player) {
+                            $("#PlayerId").append('<option value="'
+                                + player.id + '">'
+                                + player.name + '</option>');
+                        });
+                    },
+                    error: function (ex) {                        
+                        alert('Failed to retrieve players.' + ex);
+                    }
+                });
+                return false;
+            })
+         });
+
+        let flatpickrInstance;
+                
+        flatpickrInstance = flatpickr("#EventTime", {
+            enableTime: true,
+            minDate: "today",
+            dateFormat: "Y-m-d H:i", 
+            defaultDate: "@Model.Match.StartDate.ToString("yyyy-MM-dd HH:mm")",
+        });
+
+       
+        document.querySelector('[name="PlayerId"]').addEventListener('change', function (){
+           
+            const matchId = @Model.Match.Id;
+            debugger;
+            if (matchId) { 
+                    
+                // Fetch start and end dates for the selected match
+                fetch(`/Matches/GetMatchDateRange?matchId=${matchId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        flatpickrInstance.set("minDate", data.startDate);
+                        flatpickrInstance.set("maxDate", data.endDate);
+                    })
+                    .catch(error => console.log('Error:', error));
+            }
+            else
+            {
+                    flatpickrInstance.set("minDate", "today");
+                    flatpickrInstance.set("maxDate", null);
+            }
+        });
+       
+    </script>
+}
+

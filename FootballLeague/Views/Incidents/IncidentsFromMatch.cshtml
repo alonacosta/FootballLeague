@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FootballLeague.Data.Entities.Incident>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-inline-flex justify-content-start align-items-center">
+    <h2>Incidents</h2>
+    <div class="ml-5">
+        <a asp-action="Index" asp-controller="Matches" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i> Back to Matches</a>
+    </div>
+</div>
+@* @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+{
+    <p class="mt-3">
+        <a asp-action="Create" class="btn btn-primary"><i class="fas fa-save"></i> Create New</a>
+    </p>
+} *@
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Player)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Match.MatchName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OccurenceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventTime)
+            </th>
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Player.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Match.MatchName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OccurenceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventTime)
+                </td>
+
+
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

@@ -5,7 +5,7 @@
 }
 
 
-<h2>@Model.FirstOrDefault()?.Round?.Name  <i class="fas fa-futbol"></i> Matches </h2>
+<h2>@Model.FirstOrDefault()?.Round?.Name  <span class="ml-3"><i class="fas fa-futbol"></i> Matches </span></h2>
 
 <table class="table mt-3">
     <thead>
@@ -61,7 +61,7 @@
 
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
-                    <a asp-action="Index" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
+                    <a asp-action="IncidentsFromMatch" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
                    
                 </td>
             </tr>

@@ -411,6 +411,22 @@ namespace FootballLeague.Controllers
             }
            
             return Json(new { startDate = round.DateStart.ToString("yyyy-MM-dd HH:mm") });
-        }        
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetMatchDateRange(int matchId)
+        {
+            var match = await _matchRepository.GetByIdAsync(matchId);
+            if (match == null)
+            {
+                return NotFound();
+            }
+
+            var startDate = match.StartDate;
+            var endDate = match.StartDate.AddHours(2);
+
+            return Json(new { startDate = startDate.ToString("yyyy-MM-dd HH:mm"), endDate = endDate.ToString("yyyy-MM-dd HH:mm") });
+        }
     }
 }

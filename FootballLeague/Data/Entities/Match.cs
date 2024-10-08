@@ -39,5 +39,8 @@ namespace FootballLeague.Data.Entities
 
         [Display(Name = "State")]
         public string MatchState => IsClosed == false ? "Scheduled" : "Completed";
+
+        [Display(Name = "Match")]
+        public string MatchName => $"{HomeTeam} - {AwayTeam}";
     }
 }
