@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FootballLeague.Models.MatchViewModel>
+
+@{
+    ViewData["Title"] = "Matches by Round";
+}
+
+
+<h2>@Model.FirstOrDefault()?.Round?.Name  <i class="fas fa-futbol"></i> Matches </h2>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HomeTeam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AwayTeam)
+            </th>
+            
+            <th colspan="2">
+                Scores
+              @*   @Html.DisplayNameFor(model => model.HomeScore)
+             *@
+            </th> @* <th>
+            @Html.DisplayNameFor(model => model.AwayScore)
+            </th>  *@
+             <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MatchState)
+            </th>
+            <th></th> 
+        </tr>
+       
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImagePathHomeTeam" alt="@item.HomeTeam" style="width: 35px; height: 35px;" />
+                    @Html.DisplayFor(modelItem => item.HomeTeam)
+                </td>
+                <td>
+                    <img src="@item.ImagePathAwayTeam" alt="@item.HomeTeam" style="width: 35px; height: 35px;" />
+                    @Html.DisplayFor(modelItem => item.AwayTeam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HomeScore)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AwayScore)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MatchState)
+                </td>
+
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                    <a asp-action="Index" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
+                   
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

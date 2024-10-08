@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballLeague.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241007062818_AddRoundAndMatchesWithIncidents")]
+    [Migration("20241007181910_AddRoundAndMatchesWithIncidents")]
     partial class AddRoundAndMatchesWithIncidents
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,14 +107,12 @@ namespace FootballLeague.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AwayTeam")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HomeScore")
                         .HasColumnType("int");
 
                     b.Property<string>("HomeTeam")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsClosed")
@@ -130,7 +128,7 @@ namespace FootballLeague.Migrations
 
                     b.HasIndex("RoundId");
 
-                    b.ToTable("Matchers");
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("FootballLeague.Data.Entities.Player", b =>

@@ -105,14 +105,12 @@ namespace FootballLeague.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AwayTeam")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HomeScore")
                         .HasColumnType("int");
 
                     b.Property<string>("HomeTeam")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsClosed")
@@ -128,7 +126,7 @@ namespace FootballLeague.Migrations
 
                     b.HasIndex("RoundId");
 
-                    b.ToTable("Matchers");
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("FootballLeague.Data.Entities.Player", b =>

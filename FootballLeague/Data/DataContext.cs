@@ -12,7 +12,8 @@ namespace FootballLeague.Data
 		public DbSet<Player> Players { get; set; }
 		public DbSet<Position> Positions { get; set; }
         public DbSet<Round> Rounds { get; set; }
-		public DbSet<Match> Matchers { get; set; }
+		public DbSet<Match> Matches { get; set; }
+
 		public DbSet<Incident> Incidents { get; set; }
 
 

@@ -12,13 +12,13 @@ namespace FootballLeague.Data.Entities
         [Required]
         public int RoundId { get; set; }
 
-        [Required]
+       
         [Display(Name = "Home Team")]
-        public string HomeTeam { get; set; }
+        public string HomeTeam { get; set; }        
 
-        [Required]
+       
         [Display(Name = "Away Team")]
-        public string AwayTeam { get; set; }
+        public string AwayTeam { get; set; }       
 
         [Required]
         [Display(Name = "Home Score")]
@@ -30,11 +30,14 @@ namespace FootballLeague.Data.Entities
 
         public bool IsClosed { get; set; }
 
-        [Display(Name = "Start Date")]
+        [Display(Name = "Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; } 
 
         public ICollection<Incident> Incidents { get; set; }
         public Round Round { get; set; }
+
+        [Display(Name = "State")]
+        public string MatchState => IsClosed == false ? "Scheduled" : "Completed";
     }
 }

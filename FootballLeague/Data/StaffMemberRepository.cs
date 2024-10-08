@@ -20,7 +20,7 @@ namespace FootballLeague.Data
             return _context.StaffMembers
                 .Include(s => s.Club)        
                 .Include(s => s.Function)    
-                .Include(s => s.User)        
+                .Include(s => s.User)                  
                 .AsNoTracking();
         }
 

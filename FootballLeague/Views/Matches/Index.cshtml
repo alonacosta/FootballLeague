@@ -1,0 +1,81 @@
+﻿@model IEnumerable<FootballLeague.Models.MatchViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@* @if (!Model.Any())
+{
+    <p>No matches found. You can <a asp-action="Create" class="btn btn-primary">Create a new match</a>.</p>
+} *@
+
+<h2><i class="fas fa-futbol"></i> Matches </h2>
+
+@if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+{
+    <p class="mt-3">
+        <a asp-action="Create" class="btn btn-primary"><i class="fas fa-save"></i> Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>           
+            <th>
+                @Html.DisplayNameFor(model => model.HomeTeam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AwayTeam)
+            </th>
+            <th colspan="2">
+                Scores                         
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MatchState)
+            </th>           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center;">
+                    <img src="@item.ImagePathHomeTeam" alt="@item.HomeTeam" style="width: 35px; height: 35px; margin-right: 5px; " />
+                    @Html.DisplayFor(modelItem => item.HomeTeam)
+                </div>
+            </td>
+            <td>
+                    <img src="@item.ImagePathAwayTeam" alt="@item.HomeTeam" style="width: 35px; height: 35px;margin-right: 5px;" />
+                @Html.DisplayFor(modelItem => item.AwayTeam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HomeScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AwayScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MatchState)
+            </td>         
+           
+            <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                   
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        <a asp-action="UpdateScore" asp-controller="Matches" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-futbol"></i> Update Scores</a>
+                    }
+                    <a asp-action="Index" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
+                   
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

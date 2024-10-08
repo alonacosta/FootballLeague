@@ -24,14 +24,14 @@ namespace FootballLeague.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Matchers",
+                name: "Matches",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoundId = table.Column<int>(type: "int", nullable: false),
-                    HomeTeam = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AwayTeam = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HomeTeam = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AwayTeam = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HomeScore = table.Column<int>(type: "int", nullable: false),
                     AwayScore = table.Column<int>(type: "int", nullable: false),
                     IsClosed = table.Column<bool>(type: "bit", nullable: false),
@@ -39,9 +39,9 @@ namespace FootballLeague.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Matchers", x => x.Id);
+                    table.PrimaryKey("PK_Matches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Matchers_Rounds_RoundId",
+                        name: "FK_Matches_Rounds_RoundId",
                         column: x => x.RoundId,
                         principalTable: "Rounds",
                         principalColumn: "Id",
@@ -63,9 +63,9 @@ namespace FootballLeague.Migrations
                 {
                     table.PrimaryKey("PK_Incidents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Incidents_Matchers_MatchId",
+                        name: "FK_Incidents_Matches_MatchId",
                         column: x => x.MatchId,
-                        principalTable: "Matchers",
+                        principalTable: "Matches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -87,8 +87,8 @@ namespace FootballLeague.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matchers_RoundId",
-                table: "Matchers",
+                name: "IX_Matches_RoundId",
+                table: "Matches",
                 column: "RoundId");
         }
 
@@ -98,7 +98,7 @@ namespace FootballLeague.Migrations
                 name: "Incidents");
 
             migrationBuilder.DropTable(
-                name: "Matchers");
+                name: "Matches");
 
             migrationBuilder.DropTable(
                 name: "Rounds");

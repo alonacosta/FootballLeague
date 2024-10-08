@@ -1,0 +1,61 @@
+﻿@model FootballLeague.Models.MatchViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Match Details</h2>
+
+<div>
+    
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Match           
+        </dt>
+        <dd class = "col-sm-10">
+            <div class="row d-inline-flex align-items-center">
+                <div class="d-block mr-5">
+                    <div>
+                        <img src="@Model.ImagePathHomeTeam" alt="@Model.HomeTeam" style="width: 35px; height: 35px; margin-right: 5px; " />
+                        @Html.DisplayFor(model => model.HomeTeam)
+                    </div>
+                    <div>
+						<img src="@Model.ImagePathAwayTeam" alt="@Model.HomeTeam" style="width: 35px; height: 35px;margin-right: 5px;" />
+						@Html.DisplayFor(model => model.AwayTeam)
+                    </div>        
+                </div>
+                <div class="ml-3">
+                    <div>@Html.DisplayFor(model => model.HomeScore)</div>
+                    <div class="mt-2">@Html.DisplayFor(model => model.AwayScore)</div>
+                </div>
+            </div>            
+        </dd> 
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MatchState)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MatchState)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Round)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Round.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+    }
+    
+    <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+</div>

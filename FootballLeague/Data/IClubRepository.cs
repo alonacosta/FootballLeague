@@ -12,6 +12,7 @@ namespace FootballLeague.Data
 
         IEnumerable<SelectListItem> GetComboClubs();
         Task<Club> GetClubDoPlayerAsync(Player player);
+        Task<Club> GetClubeByNameAsync(string ClubName);
 
     }
 }

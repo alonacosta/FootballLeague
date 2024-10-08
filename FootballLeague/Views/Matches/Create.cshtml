@@ -1,0 +1,70 @@
+﻿@model FootballLeague.Models.MatchViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create New Match</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="RoundId" class="control-label"></label>
+                <select asp-for="RoundId" asp-items="Model.Rounds" class="form-control"></select>
+                <span asp-validation-for="RoundId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HomeTeamId" class="control-label"></label>
+                <select asp-for="HomeTeamId" asp-items="Model.ClubsHome" class="form-control"></select>
+                <span asp-validation-for="HomeTeamId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AwayTeamId" class="control-label"></label>
+                <select asp-for="AwayTeamId" asp-items="Model.ClubsAway" class="form-control"></select>
+                <span asp-validation-for="AwayTeamId" class="text-danger"></span>
+            </div>            
+           
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" id="StartDate" class="form-control" placeholder="Select Date..." />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create</button>
+                <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let flatpickrInstance;
+
+        document.addEventListener("DOMContentLoaded", function () {
+                flatpickrInstance = flatpickr("#StartDate", {
+                enableTime: true,
+                minDate: "today",
+                dateFormat: "Y-m-d H:i",
+            });
+            
+            document.querySelector('[name="RoundId"]').addEventListener('change', function () {
+                const roundId = this.value;
+
+                fetch(`/Matches/GetRoundStartDate?roundId=${roundId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        flatpickrInstance.set("minDate", data.startDate); 
+                    })
+                    .catch(error => console.log('Erro ao buscar a data de início da rodada:', error));
+            });
+        });
+    </script>
+    
+}

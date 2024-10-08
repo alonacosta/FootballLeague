@@ -45,12 +45,12 @@ namespace FootballLeague.Controllers
 
         //GET: Players
         [Authorize(Roles = "Representative")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            if(user == null) 
-            { 
-                return NotFound(); 
+            if (user == null)
+            {
+                return NotFound();
             }
 
             var staffMember = await _staffMemberRepository.GetStaffMemberAsync(user);
@@ -62,9 +62,9 @@ namespace FootballLeague.Controllers
             var clubId = staffMember.ClubId;
 
             var players = _playerRepository.GetAllPlayersDoClub(clubId).OrderBy(p => p.Name);
-            if(players == null)
+            if (players == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
             return View(players);            
         }
@@ -288,7 +288,7 @@ namespace FootballLeague.Controllers
                 players = _playerRepository
                           .GetAllPlayersDoClubWithPosition(club.Id, position.Id)
                           .OrderBy(p => p.Name)
-                          .ToList();                
+                          .ToList();
 
                 if (players == null)
                 {

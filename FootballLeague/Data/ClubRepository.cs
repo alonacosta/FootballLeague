@@ -46,6 +46,14 @@ namespace FootballLeague.Data
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Club> GetClubeByNameAsync(string ClubName)
+        {
+            return await _context.Clubs
+                .Include(p => p.Players)
+                .Where(c => c.Name == ClubName)
+                .FirstOrDefaultAsync();
+        }
+
         
     }
 }
