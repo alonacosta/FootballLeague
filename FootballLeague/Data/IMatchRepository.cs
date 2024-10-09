@@ -12,6 +12,8 @@ namespace FootballLeague.Data
         Task<List<Match>> GetMatchesWithRound(int roundId);
         Task<Match> GetMatchByIdAsync(int id);
         Task<Match> UpdateMatchAsync(Match match);
+        Task<Match> CloseMatchAsync(Match match);
         IEnumerable<SelectListItem> GetComboMatches();
+        List<Match> GetMatchesReadyToClose();
     }
 }

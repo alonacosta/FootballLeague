@@ -85,9 +85,7 @@ namespace FootballLeague.Controllers
                     imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "clubs");                }
 
                 var club = _converterHelper.ToClub(model, imageId, true);
-
-                //TODO: Modify to User with role Representative
-                //club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
+                
                 await _clubRepository.CreateAsync(club);
                 return RedirectToAction(nameof(Index));
             }
@@ -133,17 +131,14 @@ namespace FootballLeague.Controllers
                     }
 
                     var club = _converterHelper.ToClub(model, imageId, false);
-
-                    //TODO: Modify to User with role Representative
-                    //club.User = await _userHelper.GetUserByEmailAsync("alona.costa2@gmail.com");
-                    await _clubRepository.UpdateAsync(club);
                    
+                    await _clubRepository.UpdateAsync(club);                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (! await _clubRepository.ExistAsync(model.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("ClubNotFound");
                     }
                     else
                     {
@@ -190,11 +185,16 @@ namespace FootballLeague.Controllers
             await _clubRepository.DeleteAsync(club);
             
             return RedirectToAction(nameof(Index));
-        }   
-        
+        }
+
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> ClubDetails()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            if (user == null) 
+            {
+                return NotFound();
+            }
 
             var staffMember = await _staffMemberRepository.GetStaffMemberAsync(user);
             if (staffMember == null)
@@ -206,13 +206,18 @@ namespace FootballLeague.Controllers
 
             var club = await _clubRepository.GetByIdAsync(clubId);
             if (club == null) 
-            { 
-                return NotFound(); 
+            {
+                return NotFound();
             }
 
-            return View(club);
+            return View(club);                       
+        }
 
-            //return this.RedirectToAction("Details", new { Id = clubId });            
-        }		
-	}
+        //public IActionResult ClubNotFound()
+        //{
+        //    return View();
+        //}
+
+       
+    }
 }

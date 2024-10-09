@@ -53,12 +53,32 @@ namespace FootballLeague.Data
 
             existingMatch.HomeScore = match.HomeScore;
             existingMatch.AwayScore = match.AwayScore;
-            existingMatch.IsClosed = match.IsClosed;
+            existingMatch.IsFinished = match.IsFinished;
 
             _context.Matches.Update(existingMatch);
             await _context.SaveChangesAsync();
 
             return existingMatch;       
+        }
+
+        public async Task<Match> CloseMatchAsync(Match match)
+        {
+
+            var existingMatch = await _context.Matches
+                .Include(m => m.Round)
+                .FirstOrDefaultAsync(m => m.Id == match.Id);
+
+            if (existingMatch == null)
+            {
+                return null;
+            }
+          
+            existingMatch.IsClosed = match.IsClosed;
+
+            _context.Matches.Update(existingMatch);
+            await _context.SaveChangesAsync();
+
+            return existingMatch;
         }
 
         public IEnumerable<SelectListItem> GetComboMatches()
@@ -76,6 +96,22 @@ namespace FootballLeague.Data
             });
 
             return list;
+        }
+
+
+        public List<Match> GetMatchesReadyToClose()
+        {
+            var matchesNotClosed = _context.Matches.
+                Include(m => m.Round)
+                .Where(m => !m.IsClosed)
+                .ToList();
+
+            var matchesReadyToClose = matchesNotClosed
+                .Where(m => m.IsFinished)
+                .ToList();
+
+            return matchesReadyToClose;
+            
         }
     }
 }

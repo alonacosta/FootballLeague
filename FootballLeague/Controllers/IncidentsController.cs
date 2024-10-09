@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using FootballLeague.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballLeague.Controllers
 {
@@ -32,7 +33,7 @@ namespace FootballLeague.Controllers
             _matchRepository = matchRepository;
         }
 
-        // GET: Incidents
+        // GET: Incidents       
         public IActionResult Index()
         {            
             return View(_incidentRepository.GetAllIncidents());

@@ -1,0 +1,106 @@
+﻿@model FootballLeague.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Dashboard</h2>
+
+<div class="row mt-3">
+    <!-- Section for Roundss Ready to Close -->
+    <div class="col-md-6">        
+        <h6>Rounds to Close</h6>
+        <table class="table table-info table-sm table-striped small">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date Start</th>
+                    <th>Data End</th>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var round in Model.RoundsReadyToClose)
+                {
+                    <tr >
+                        <td class="align-middle">@round.Name</td>
+                        <td class="align-middle">@round.DateStart.ToString("yyyy/MM/dd HH:mm tt")</td>
+                        <td class="align-middle">@round.DateEnd?.ToString("yyyy/MM/dd HH:mm tt")</td>
+                        <td class="align-middle">@round.State</td>
+                        <td class="small align-middle">
+                            <a asp-action="CloseRound" asp-controller="Rounds" asp-route-id="@round.Id" class="btn btn-warning btn-sm text-sm-center py-0"><i class="fas fa-sign-out-alt"></i> Close</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <!-- Section for Matches Ready to Close -->
+        <h6>Matches to Close</h6>
+        <table class="table table-primary table-sm table-striped small">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Result</th>
+                    <th>Round</th>
+                    <th>Date Start</th>                   
+                    <th>State</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var match in Model.MatchesReadyToClose)
+                {
+                    <tr>
+                        <td class="align-middle">@match.MatchName</td>
+                        <td class="align-middle">@match.HomeScore : @match.AwayScore</td>
+                        <td class="align-middle">@match.Round.Name</td>
+                        <td class="align-middle">@match.StartDate.ToString("yyyy/MM/dd HH:mm tt")</td>
+                        <td class="align-middle">@match.State</td>
+                        <td class="small align-middle">
+                            <a asp-action="CloseMatch" asp-controller="Matches" asp-route-id="@match.Id" class="btn btn-warning btn-sm text-sm-center py-0"><i class="fas fa-sign-out-alt"></i> Close</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div>
+    <!-- Section for Rounds Closed -->
+    <h6>Rounds Fechados</h6>
+    <table class="table table-striped table-sm small">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date Start</th>
+                <th>Data End</th>
+                <th>State</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var round in Model.RoundsIsClosed)
+            {              
+                <tr>
+                    <td class="align-middle">@round.Name</td>
+                    <td class="align-middle">@round.DateStart.ToString("yyyy/MM/dd HH:mm tt")</td>
+                    <td class="align-middle">@round.DateEnd?.ToString("yyyy/MM/dd HH:mm tt")</td>
+                    <td class="align-middle">@round.State</td>
+                    <td class="small align-middle">
+                        <a asp-action="GetStatistics" asp-controller="Rounds" asp-route-id="@round.Id" class="btn btn-success btn-sm text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
+                    </td>
+                </tr>                
+            }
+        </tbody>
+    </table>
+</div>
+
+@* <div>
+    <!-- Botões para Navegação -->
+    <a href="@Url.Action("Statistics", "Dashboard")" class="btn btn-primary">Ver Estatísticas</a>
+    <a href="@Url.Action("Matches", "Dashboard")" class="btn btn-secondary">Ver Partidas</a>
+</div> *@
+

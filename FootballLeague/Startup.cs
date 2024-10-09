@@ -60,6 +60,9 @@ namespace FootballLeague
 
             services.ConfigureApplicationCookie(options =>
             {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/NotAuthorized";
+
                 options.Events.OnValidatePrincipal = async context =>
                 {
                     var userPrincipal = context.Principal;
@@ -71,7 +74,7 @@ namespace FootballLeague
                         var user = await userManager.FindByIdAsync(userId);
                         if (user == null)
                         {
-                            // Usuário não existe mais, rejeitar a sessão
+                            // User don't exist more, recuse a session
                             context.RejectPrincipal();
                             await context.HttpContext.SignOutAsync();
                         }
@@ -94,10 +97,13 @@ namespace FootballLeague
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Errors/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

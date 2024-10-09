@@ -12,13 +12,11 @@ namespace FootballLeague.Controllers
 {
     public class RoundsController : Controller
     {
-        //private readonly DataContext _context;
+        
         private readonly IRoundRepository _roundRepository;
 
-        public RoundsController(DataContext context,
-            IRoundRepository roundRepository)
-        {
-            //_context = context;
+        public RoundsController(IRoundRepository roundRepository)
+        {           
             _roundRepository = roundRepository;
         }
 
@@ -89,7 +87,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DateStart,DateEnd,IsClosed")] Round round)
+        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Name,DateStart,DateEnd,IsClosed")]*/ Round round)
         {
             if (id != round.Id)
             {
@@ -100,7 +98,7 @@ namespace FootballLeague.Controllers
             {
                 try
                 {
-                    await _roundRepository.UpdateAsync(round);
+                    await _roundRepository.UpdateRoundAsync(round);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,6 +112,56 @@ namespace FootballLeague.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
+            }
+            return View(round);
+        }
+
+        // GET: Rounds/CloseRound/5
+        public async Task<IActionResult> CloseRound(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var round = await _roundRepository.GetByIdAsync(id.Value);
+            if (round == null)
+            {
+                return NotFound();
+            }
+            return View(round);
+        }
+
+        // POST: Rounds/CloseRound/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseRound(int id, Round round)
+        {
+            if (id != round.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _roundRepository.CloseRoundAsync(round);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _roundRepository.ExistAsync(round.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "Dashboard");
             }
             return View(round);
         }

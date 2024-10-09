@@ -30,6 +30,8 @@ namespace FootballLeague.Data.Entities
 
         public bool IsClosed { get; set; }
 
+        public bool IsFinished { get; set; }
+
         [Display(Name = "Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; } 
@@ -38,7 +40,10 @@ namespace FootballLeague.Data.Entities
         public Round Round { get; set; }
 
         [Display(Name = "State")]
-        public string MatchState => IsClosed == false ? "Scheduled" : "Completed";
+        public string MatchState => IsClosed == false ? "Active" : "Completed";
+
+        [Display(Name = "State")]
+        public string State => IsFinished == false ? "Scheduled" : "Finished";
 
         [Display(Name = "Match")]
         public string MatchName => $"{HomeTeam} - {AwayTeam}";

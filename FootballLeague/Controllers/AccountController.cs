@@ -2,6 +2,7 @@
 using FootballLeague.Data.Entities;
 using FootballLeague.Helpers;
 using FootballLeague.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -59,7 +60,18 @@ namespace FootballLeague.Controllers
                     {
                         return Redirect(this.Request.Query["ReturnUrl"].First());
                     }
-                    return RedirectToAction("Index", "Home");
+
+                    var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
+                    if(await _userHelper.IsUserInRoleAsync(user, "SportsSecretary"))
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                   
                 }
             }            
 
@@ -73,6 +85,7 @@ namespace FootballLeague.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
             var model = new RegisterNewUserViewModel
@@ -84,6 +97,7 @@ namespace FootballLeague.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
             if (ModelState.IsValid) 
@@ -228,6 +242,11 @@ namespace FootballLeague.Controllers
             }
             return this.View(model);
         }
-        
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
     }
 }

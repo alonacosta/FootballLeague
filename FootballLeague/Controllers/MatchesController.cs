@@ -53,6 +53,7 @@ namespace FootballLeague.Controllers
                     HomeScore = match.HomeScore,
                     AwayScore = match.AwayScore,
                     IsClosed = match.IsClosed,
+                    IsFinished = match.IsFinished,
                     StartDate = match.StartDate,
                     ImageIdHomeTeam = clubHome.ImageId,
                     ImagePathHomeTeam = clubHome.ImageFullPath,
@@ -94,6 +95,7 @@ namespace FootballLeague.Controllers
                     HomeScore = match.HomeScore,
                     AwayScore = match.AwayScore,
                     IsClosed = match.IsClosed,
+                    IsFinished = match.IsFinished,
                     StartDate = match.StartDate,
                     ImageIdHomeTeam = clubHome.ImageId,
                     ImagePathHomeTeam = clubHome.ImageFullPath,
@@ -133,6 +135,7 @@ namespace FootballLeague.Controllers
                 AwayScore = match.AwayScore,
                 StartDate = match.StartDate,
                 IsClosed = match.IsClosed,
+                IsFinished = match.IsFinished,
                 Round = match.Round,
                 HomeTeamId = clubHome.Id,
                 AwayTeamId = clubAway.Id,
@@ -190,6 +193,7 @@ namespace FootballLeague.Controllers
                     HomeScore = model.HomeScore, 
                     AwayScore = model.AwayScore,
                     IsClosed = false,
+                    IsFinished = false,
                     StartDate = model.StartDate,                             
                 };
                 await _matchRepository.CreateAsync(match);
@@ -228,6 +232,7 @@ namespace FootballLeague.Controllers
                 HomeScore = match.HomeScore,
                 AwayScore = match.AwayScore,
                 IsClosed = match.IsClosed,
+                IsFinished = match.IsFinished,
                 StartDate = match.StartDate,
                 Round = match.Round,
                 HomeTeamId = clubHome.Id,
@@ -258,6 +263,7 @@ namespace FootballLeague.Controllers
                     model.HomeScore = 0;
                     model.AwayScore = 0;
                     model.IsClosed = false;
+                    model.IsFinished = false;
                     model.ImageIdHomeTeam = homeTeam.ImageId;
                     model.ImageIdAwayTeam = awayTeam.ImageId;
                     model.ImagePathHomeTeam = homeTeam.ImageFullPath;
@@ -272,6 +278,7 @@ namespace FootballLeague.Controllers
                         HomeScore = model.HomeScore,
                         AwayScore = model.AwayScore,
                         IsClosed = model.IsClosed,
+                        IsFinished = model.IsFinished,
                         StartDate = model.StartDate,
                         RoundId = model.RoundId,                        
                     };
@@ -346,6 +353,57 @@ namespace FootballLeague.Controllers
             return View(match);
         }
 
+        // GET: Matches/CloseMatch/5
+        public async Task<IActionResult> CloseMatch(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var match = await _matchRepository.GetMatchByIdAsync(id.Value);
+            if (match == null)
+            {
+                return NotFound();
+            }
+
+            return View(match);
+        }
+
+        // POST: Matches/CloseMatch/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseMatch(int id, Match match)
+        {
+            if (id != match.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _matchRepository.CloseMatchAsync(match);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _matchRepository.ExistAsync(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "Dashboard");
+            }
+            return View(match);
+        }
+
         // GET: Matches/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -372,6 +430,7 @@ namespace FootballLeague.Controllers
                 AwayScore = match.AwayScore,
                 StartDate = match.StartDate,
                 IsClosed = match.IsClosed,
+                IsFinished = match.IsFinished,
                 Round = match.Round,
                 HomeTeamId = clubHome.Id,
                 AwayTeamId = clubAway.Id,
