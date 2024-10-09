@@ -1,4 +1,5 @@
 ﻿using FootballLeague.Data.Entities;
+using FootballLeague.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace FootballLeague.Data
         Task<Match> CloseMatchAsync(Match match);
         IEnumerable<SelectListItem> GetComboMatches();
         List<Match> GetMatchesReadyToClose();
+        Task<List<StatisticsViewModel>> CalculateStatisticsAsync(int roundId);
     }
 }

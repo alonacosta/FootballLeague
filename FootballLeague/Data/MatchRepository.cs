@@ -1,4 +1,5 @@
 ﻿using FootballLeague.Data.Entities;
+using FootballLeague.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -10,10 +11,13 @@ namespace FootballLeague.Data
     public class MatchRepository : GenericRepository<Match>, IMatchRepository
     {
         private readonly DataContext _context;
+        private readonly IClubRepository _clubRepository;
 
-        public MatchRepository(DataContext context) : base(context)
+        public MatchRepository(DataContext context,
+            IClubRepository clubRepository) : base(context)
         {
             _context = context;
+            _clubRepository = clubRepository;
         }
 
         public IQueryable<Match> GetMatches()
@@ -110,8 +114,53 @@ namespace FootballLeague.Data
                 .Where(m => m.IsFinished)
                 .ToList();
 
-            return matchesReadyToClose;
-            
+            return matchesReadyToClose;            
         }
+
+        public async Task<List<StatisticsViewModel>> CalculateStatisticsAsync(int roundId)
+        {
+            var clubs = await _context.Clubs.ToListAsync();
+
+            var matches = await _context.Matches
+                 .Include(m => m.Round)
+                 .Where(m => m.RoundId == roundId)
+                 .ToListAsync();
+
+            var statistics = matches
+                .SelectMany(m => new[] 
+                {
+                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true },
+                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false },
+                })
+                .GroupBy(m => m.Club)
+                .Select(g =>
+                {
+                    var club = clubs.FirstOrDefault(c => c.Name == g.Key);
+
+                    return new StatisticsViewModel
+                    {
+                        ClubName = g.Key,
+                        ImageId = club.ImageId,
+                        ImageFullPath = club.ImageFullPath,
+                        TotalMatches = g.Count(),
+                        Wins = g.Count(x => (x.IsHome && x.Scored > x.Conceded) || (!x.IsHome && x.Scored > x.Conceded)),
+                        Draws = g.Count(x => x.Scored == x.Conceded),
+                        Losses = g.Count(x => (x.IsHome && x.Scored < x.Conceded) || (!x.IsHome && x.Scored < x.Conceded)),
+                        GoalsScored = g.Sum(x => x.Scored),
+                        GoalsConceded = g.Sum(x => x.Conceded),
+                        Points = g.Sum(x => x.Scored > x.Conceded ? 3 : x.Scored == x.Conceded ? 1 : 0)
+                    };
+                })
+                .OrderByDescending(s => s.Points)
+                .ToList();
+
+            for(int i = 0; i <statistics.Count; i++)
+            {
+                statistics[i].Position = i + 1;
+            }
+            return statistics;
+        }
+
+
     }
 }

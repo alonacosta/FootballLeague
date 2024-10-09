@@ -90,7 +90,7 @@
                     <td class="align-middle">@round.DateEnd?.ToString("yyyy/MM/dd HH:mm tt")</td>
                     <td class="align-middle">@round.State</td>
                     <td class="small align-middle">
-                        <a asp-action="GetStatistics" asp-controller="Rounds" asp-route-id="@round.Id" class="btn btn-success btn-sm text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
+                        <a asp-action="GetStatistics" asp-controller="Dashboard" asp-route-id="@round.Id" class="btn btn-success btn-sm text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
                     </td>
                 </tr>                
             }

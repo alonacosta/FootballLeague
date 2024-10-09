@@ -13,7 +13,9 @@ namespace FootballLeague.Data
 
 		List<Round> GetRoundsReadyToClose();
         List<Round> GetRoundsIsClosed();
-        
+        List<Round> GetAllRounds();
+
+
 
 
     }

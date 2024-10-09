@@ -98,5 +98,13 @@ namespace FootballLeague.Data
             return roundsIsClosed;
 
         }
+
+        public List<Round> GetAllRounds()
+        {
+            var rounds = _context.Rounds
+                .Include(r => r.Matches)
+                .ToList();
+            return rounds;
+        }
     }
 }

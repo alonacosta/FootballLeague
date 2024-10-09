@@ -9,5 +9,12 @@ namespace FootballLeague.Models
         public List<Round> RoundsIsClosed { get; set; }
 
         public ICollection<Match> MatchesReadyToClose { get; set; }
+
+        public List<StatisticsViewModel> Statistics { get; set; }
+
+        public List<RoundStatisticsViewModel> RoundStatistics { get; set; }
+
+        
+        
     }
 }

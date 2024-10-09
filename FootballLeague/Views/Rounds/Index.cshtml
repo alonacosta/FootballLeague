@@ -45,6 +45,8 @@
                     
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
                 <a asp-controller="Matches" asp-action="MatchesByRound"  asp-route-id="@item.Id" class="btn btn-outline-success"><i class="fas fa-futbol"></i> Matches</a>
+                <a asp-action="GetStatistics" asp-controller="Dashboard" asp-route-id="@item.Id" class="btn btn-outline-success text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
+               
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
