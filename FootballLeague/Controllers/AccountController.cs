@@ -6,9 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FootballLeague.Controllers
@@ -21,13 +27,17 @@ namespace FootballLeague.Controllers
         private readonly IStaffMemberRepository _staffMemberRepository;
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IConfiguration _configuration;
+        private readonly IMailHelper _mailHelper;
 
         public AccountController(IUserHelper userHelper,
             IFunctionRepository functionRepository,
             IClubRepository clubRepository,
             IStaffMemberRepository staffMemberRepository,
             IConverterHelper converterHelper, 
-            IBlobHelper blobHelper)
+            IBlobHelper blobHelper,
+            IConfiguration configuration,
+            IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _functionRepository = functionRepository;
@@ -35,6 +45,8 @@ namespace FootballLeague.Controllers
             _staffMemberRepository = staffMemberRepository;
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
+            _configuration = configuration;
+            _mailHelper = mailHelper;
         }
 
         public IActionResult Login()
@@ -63,15 +75,14 @@ namespace FootballLeague.Controllers
 
                     var user = await _userHelper.GetUserByEmailAsync(model.Username);
 
-                    if(await _userHelper.IsUserInRoleAsync(user, "SportsSecretary"))
+                    if(await _userHelper.IsUserInRoleAsync(user, "Admin"))
                     {
                         return RedirectToAction("Index", "Dashboard");
                     }
                     else
                     {
                         return RedirectToAction("Index", "Home");
-                    }
-                   
+                    }                   
                 }
             }            
 
@@ -126,15 +137,51 @@ namespace FootballLeague.Controllers
                         return View(model);
                     }
 
-                    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
-
-                    var staffMember = new StaffMember
+                    string resetToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                    string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
+                    string tokenLink = Url.Action("ResetPassword", "Account", new
                     {
-                        User = user,
-                        ClubId = model.ClubId,
-                        FunctionId = model.FunctionId,
-                    };
-                    await _staffMemberRepository.CreateAsync(staffMember);
+                        userid = user.Id,
+                        token = encodedToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                       $"To allow the user, " +
+                       $"please click in this link:</br></br><a href = \"{tokenLink}\">Reset Password and Confirm Email</a>");
+
+                    if (response.IsSuccess)
+                    {
+                        await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+
+                        var staffMember = new StaffMember
+                        {
+                            User = user,
+                            ClubId = model.ClubId,
+                            FunctionId = model.FunctionId,
+                        };
+                        await _staffMemberRepository.CreateAsync(staffMember);
+
+                        var isInRole = await _userHelper.IsUserInRoleAsync(user, function.NamePosition);
+                        if (!isInRole)
+                        {
+                            await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+                        }
+
+                        ViewBag.Message = "The instractions for user has been sent to email";
+                        //return View(model);
+                    }
+
+                    //await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+
+                    //var staffMember = new StaffMember
+                    //{
+                    //    User = user,
+                    //    ClubId = model.ClubId,
+                    //    FunctionId = model.FunctionId,
+                    //};
+                    //await _staffMemberRepository.CreateAsync(staffMember);
+
+                    ModelState.AddModelError(string.Empty, "The user couldn't be logged");
                 }
                 else
                 {
@@ -142,15 +189,15 @@ namespace FootballLeague.Controllers
                     return View(model);
                 }
 
-                var isInRole = await _userHelper.IsUserInRoleAsync(user, function.NamePosition);
-                if (!isInRole) 
-                {
-                    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
-                }
+                //var isInRole = await _userHelper.IsUserInRoleAsync(user, function.NamePosition);
+                //if (!isInRole) 
+                //{
+                //    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
+                //}
             }
 
             return RedirectToAction("Index", "Users"); 
-            //RedirectToAction(nameof(GetSuccess));
+            
         }
 
         public IActionResult GetSuccess()
@@ -246,6 +293,136 @@ namespace FootballLeague.Controllers
         public IActionResult NotAuthorized()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                if (user != null)
+                {
+                    var result = await _userHelper.ValidatePasswordAsync(
+                        user,
+                        model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        var claims = new[]
+                        {
+                            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                        };
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        var token = new JwtSecurityToken(
+                            _configuration["Tokens:Issuer"],
+                            _configuration["Tokens:Audience"],
+                            claims,
+                            expires: DateTime.UtcNow.AddDays(15),
+                            signingCredentials: credentials);
+                        var results = new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo
+                        };
+
+                        return this.Created(string.Empty, results);
+
+                    }
+                }
+            }
+
+            return BadRequest();
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
+        public async Task<IActionResult> ResetPassword(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            ////var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            ////var result = await _userHelper.ConfirmEmailAsync(user, decodedToken);
+            ////if (!result.Succeeded)
+            ////{
+            ////    return NotFound();
+            ////}
+
+            var model = new ResetPasswordViewModel
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByIdAsync(model.UserId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+                var result = await _userHelper.ResetPasswordAsync(user, decodedToken, model.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    var emailToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmEmailResult = await _userHelper.ConfirmEmailAsync(user, emailToken);
+                    if (confirmEmailResult.Succeeded)
+                    {
+                        return RedirectToAction("Login");
+                    }                   
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
         }
 
     }

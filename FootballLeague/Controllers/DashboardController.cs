@@ -16,6 +16,8 @@ namespace FootballLeague.Controllers
             _roundRepository = roundRepository;
             _matchRepository = matchRepository;
         }
+
+       
         public IActionResult Index()
         {
             var roundsReadyToClose = _roundRepository.GetRoundsReadyToClose();
@@ -31,16 +33,7 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetStatisticsByRound(int? id)
-        {
-            var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(id.Value);
-
-            var model = new DashboardViewModel
-            {
-                Statistics = statistics,
-            };
-            return View(model);
-        }
+       
 
         public async Task<IActionResult> GetStatistics()
         {
@@ -58,13 +51,7 @@ namespace FootballLeague.Controllers
             var rounds = _roundRepository.GetAllRounds();
             var allRoundsStatisticts = new List<RoundStatisticsViewModel>();
            
-                var statistics = await _matchRepository.CalculateStatisticsAsync();
-            //var roundStatistics = new RoundStatisticsViewModel
-            //{
-            //    Statistics = statistics,
-
-            //    allRoundsStatisticts.Add(roundStatistics);
-            //};
+                var statistics = await _matchRepository.CalculateStatisticsAsync();           
            
             var dashboardAllStat = new DashboardViewModel
             {
@@ -73,6 +60,16 @@ namespace FootballLeague.Controllers
             return View(dashboardAllStat);
         }
 
+        public async Task<IActionResult> GetStatisticsByRound(int? id)
+        {
+            var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(id.Value);
+
+            var model = new DashboardViewModel
+            {
+                Statistics = statistics,
+            };
+            return View(model);
+        }
 
         public async Task<IActionResult> GetAllStatisticsByRound()
         {

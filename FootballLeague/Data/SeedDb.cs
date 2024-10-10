@@ -49,6 +49,15 @@ namespace FootballLeague.Data
                     throw new InvalidOperationException("Could not create the user in seeder");
                 }
 
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationResult = await _userHelper.ConfirmEmailAsync(user, token);
+
+
+                if (!confirmationResult.Succeeded)
+                {
+                    throw new InvalidOperationException("Could not confirm the user's email in seeder");
+                }                
+
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
@@ -56,10 +65,14 @@ namespace FootballLeague.Data
 
             if (!_dataContext.Clubs.Any())
             {
-                AddClub("SL Benfica", "Sport Lisboa e Benfica's Stadium", "Bruno Lage");
-                AddClub("Sporting CP", "José Alvalade Stadium", "Rúben Amorim");
-                AddClub("FC Porto", "Dragon Stadium", "Vítor Bruno");
-                AddClub("Boavista F.C.", "The Bessa Stadium", "Cristiano Bacci");
+                AddClub("SL Benfica", "Sport Lisboa e Benfica's Stadium", 65592, "Bruno Lage");
+                AddClub("Sporting CP", "José Alvalade Stadium", 50095, "Rúben Amorim");
+                AddClub("FC Porto", "Dragon Stadium", 50033, "Vítor Bruno");
+                AddClub("Boavista F.C.", "The Bessa Stadium", 28263, "Cristiano Bacci");
+                AddClub("Santa Clara", "The Stadium of São Miguel", 12500, "Vasco Matos");
+                AddClub("Vítoria SC", "The Stadium Dom Afonso Henriques", 30029, "Rui Borges");
+                AddClub("Braga", "The Municipal Stadium of Braga", 30286, "Carlos Carvalhal");
+                AddClub("Moreirense", "The Stadium Parque Moreira de Cónegos ", 6150, "Paulo Alves");
                 await _dataContext.SaveChangesAsync();
             }
 
@@ -85,13 +98,13 @@ namespace FootballLeague.Data
             }
         }
 
-        private void AddClub(string name, string stadium, string headCoach)
+        private void AddClub(string name, string stadium, int capacity, string headCoach)
         {
             _dataContext.Clubs.Add(new Entities.Club
             {
                 Name = name,
                 Stadium = stadium,
-                Capacity = _random.Next(40000, 65500),
+                Capacity = capacity,
                 HeadCoach = headCoach,                
             });
         }

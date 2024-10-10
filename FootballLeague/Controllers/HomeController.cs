@@ -28,7 +28,7 @@ namespace FootballLeague.Controllers
             {
                 var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                
-                if (await _userHelper.IsUserInRoleAsync(user, "SportsSecretary"))
+                if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
                 {
                     return RedirectToAction("Index", "Dashboard");
                 }
