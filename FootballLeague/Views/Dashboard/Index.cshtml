@@ -2,8 +2,12 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h2>Dashboard</h2>
+<div class="row">
+    <h2 class="col-md-6">Dashboard</h2>
+    <div class="col-md-6">
+        <a asp-action="GetAllStatistics" asp-controller="Dashboard" class="btn btn-outline-primary text-sm-center"><i class="fas fa-poll"></i> Statistics</a>     
+    </div>
+</div>    
 
 <div class="row mt-3">
     <!-- Section for Roundss Ready to Close -->
@@ -90,7 +94,7 @@
                     <td class="align-middle">@round.DateEnd?.ToString("yyyy/MM/dd HH:mm tt")</td>
                     <td class="align-middle">@round.State</td>
                     <td class="small align-middle">
-                        <a asp-action="GetStatistics" asp-controller="Dashboard" asp-route-id="@round.Id" class="btn btn-success btn-sm text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
+                        <a asp-action="GetStatisticsByRound" asp-controller="Dashboard" asp-route-id="@round.Id" class="btn btn-success btn-sm text-sm-center"><i class="fas fa-poll"></i> Statistics</a>
                     </td>
                 </tr>                
             }
@@ -98,9 +102,5 @@
     </table>
 </div>
 
-@* <div>
-    <!-- Botões para Navegação -->
-    <a href="@Url.Action("Statistics", "Dashboard")" class="btn btn-primary">Ver Estatísticas</a>
-    <a href="@Url.Action("Matches", "Dashboard")" class="btn btn-secondary">Ver Partidas</a>
-</div> *@
+
 

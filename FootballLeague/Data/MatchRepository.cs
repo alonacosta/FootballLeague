@@ -117,20 +117,19 @@ namespace FootballLeague.Data
             return matchesReadyToClose;            
         }
 
-        public async Task<List<StatisticsViewModel>> CalculateStatisticsAsync(int roundId)
+        public async Task<List<StatisticsViewModel>> CalculateStatisticsAsync()
         {
             var clubs = await _context.Clubs.ToListAsync();
 
             var matches = await _context.Matches
-                 .Include(m => m.Round)
-                 .Where(m => m.RoundId == roundId)
+                 .Include(m => m.Round)                
                  .ToListAsync();
 
             var statistics = matches
                 .SelectMany(m => new[] 
                 {
-                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true },
-                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false },
+                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true, IsClosed = m.IsClosed },
+                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false, IsClosed = m.IsClosed},
                 })
                 .GroupBy(m => m.Club)
                 .Select(g =>
@@ -148,19 +147,66 @@ namespace FootballLeague.Data
                         Losses = g.Count(x => (x.IsHome && x.Scored < x.Conceded) || (!x.IsHome && x.Scored < x.Conceded)),
                         GoalsScored = g.Sum(x => x.Scored),
                         GoalsConceded = g.Sum(x => x.Conceded),
-                        Points = g.Sum(x => x.Scored > x.Conceded ? 3 : x.Scored == x.Conceded ? 1 : 0)
-                    };
+                        Points = g.Sum(x => x.Scored > x.Conceded ? 3 : x.Scored == x.Conceded ? 1 : 0),
+                        Finished = g.Count(x => x.IsClosed),
+                        Scheduled = g.Count(x => !x.IsClosed),
+					};
                 })
                 .OrderByDescending(s => s.Points)
                 .ToList();
 
-            for(int i = 0; i <statistics.Count; i++)
+            for(int i = 0; i < statistics.Count; i++)
             {
                 statistics[i].Position = i + 1;
             }
             return statistics;
         }
 
+        public async Task<List<StatisticsViewModel>> CalculateStatisticsFromRoundAsync(int roundId)
+        {
+            var clubs = await _context.Clubs.ToListAsync();
+
+            var matches = await _context.Matches
+                 .Include(m => m.Round)
+                 .Where(m => m.RoundId == roundId)
+                 .ToListAsync();
+
+            var statistics = matches
+                .SelectMany(m => new[]
+                {
+                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true, IsClosed = m.IsClosed },
+                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false, IsClosed = m.IsClosed},
+                })
+                .GroupBy(m => m.Club)
+                .Select(g =>
+                {
+                    var club = clubs.FirstOrDefault(c => c.Name == g.Key);
+
+                    return new StatisticsViewModel
+                    {
+                        ClubName = g.Key,
+                        ImageId = club.ImageId,
+                        ImageFullPath = club.ImageFullPath,
+                        TotalMatches = g.Count(),
+                        Wins = g.Count(x => (x.IsHome && x.Scored > x.Conceded) || (!x.IsHome && x.Scored > x.Conceded)),
+                        Draws = g.Count(x => x.Scored == x.Conceded),
+                        Losses = g.Count(x => (x.IsHome && x.Scored < x.Conceded) || (!x.IsHome && x.Scored < x.Conceded)),
+                        GoalsScored = g.Sum(x => x.Scored),
+                        GoalsConceded = g.Sum(x => x.Conceded),
+                        Points = g.Sum(x => x.Scored > x.Conceded ? 3 : x.Scored == x.Conceded ? 1 : 0),
+                        Finished = g.Count(x => x.IsClosed),
+                        Scheduled = g.Count(x => !x.IsClosed),
+                    };
+                })
+                .OrderByDescending(s => s.Points)
+                .ToList();
+
+            for (int i = 0; i < statistics.Count; i++)
+            {
+                statistics[i].Position = i + 1;
+            }
+            return statistics;
+        }
 
     }
 }

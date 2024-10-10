@@ -15,6 +15,8 @@ namespace FootballLeague.Models
         public int GoalsScored { get; set; }
         public int GoalsConceded { get; set; }
         public int Points { get; set; }
+        public int Finished {  get; set; }
+        public int Scheduled { get; set; }
 
     }
 }

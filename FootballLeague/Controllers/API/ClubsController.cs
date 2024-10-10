@@ -19,8 +19,7 @@ namespace FootballLeague.Controllers.API
         [HttpGet]
         public IActionResult GetClubs()
         {
-            return Ok(_clubRepository.GetAllClubs());
-            //return Ok(_clubRepository.GetAllWithUsers());
+            return Ok(_clubRepository.GetAllClubs());            
         }
     }
 }

@@ -5,10 +5,10 @@
 
 <h2>Classifications</h2>
 
-@foreach (var roundStat in Model.RoundStatistics)
-{
-	<h5 class="small mt-4"><b>@roundStat.RoundName</b></h5>
-    <table class="table table-striped table-sm small">
+@* @foreach (var roundStat in Model.RoundStatistics)
+{ *@
+	@* <h5 class="small mt-4"><b>@roundStat.RoundName</b></h5> *@
+    <table class="table table-striped table-sm small mt-3">
         <thead>
             <tr>
                 <th></th>
@@ -20,10 +20,12 @@
                 <th class="text-center">Scored</th>
                 <th class="text-center">Conceded</th>
                 <th class="text-center">Points</th>
+                <th class="text-center text-success">Played</th>
+                <th class="text-center text-warning">To go</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var stat in roundStat.Statistics)
+            @foreach (var stat in @* roundStat. *@ Model.Statistics)
             {
                 <tr>
                     <td class="align-middle">@stat.Position</td>
@@ -35,10 +37,12 @@
                     <td class="align-middle text-center">@stat.GoalsScored</td>
                     <td class="align-middle text-center">@stat.GoalsConceded</td>
                     <td class="align-middle text-center">@stat.Points</td>
+                    <td class="align-middle text-center text-success">@stat.Finished</td>
+                    <td class="align-middle text-center text-warning">@stat.Scheduled</td>
                 </tr>
             }
         </tbody>
     </table>
-}
+@* } *@
 
 
