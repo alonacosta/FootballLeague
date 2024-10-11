@@ -27,16 +27,11 @@
                 <span asp-validation-for="RememberMe" class="text-warning"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-success w-100" />
-                @* @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
-                {
-                    <a asp-action="Register" class="btn btn-primary">Register New User</a>
-                }  *@               
+                <input type="submit" value="Login" class="btn btn-success w-100" />                          
                 <a asp-action="RecoverPassword" class="btn btn-link">Forgot your password</a>
             </div>
         </form>
     </div>
-
 </div>
 
 @section Scripts {

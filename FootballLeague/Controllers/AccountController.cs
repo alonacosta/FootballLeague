@@ -169,17 +169,7 @@ namespace FootballLeague.Controllers
 
                         ViewBag.Message = "The instractions for user has been sent to email";
                         //return View(model);
-                    }
-
-                    //await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
-
-                    //var staffMember = new StaffMember
-                    //{
-                    //    User = user,
-                    //    ClubId = model.ClubId,
-                    //    FunctionId = model.FunctionId,
-                    //};
-                    //await _staffMemberRepository.CreateAsync(staffMember);
+                    }                    
 
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged");
                 }
@@ -187,17 +177,10 @@ namespace FootballLeague.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Already exists the user with this email");
                     return View(model);
-                }
-
-                //var isInRole = await _userHelper.IsUserInRoleAsync(user, function.NamePosition);
-                //if (!isInRole) 
-                //{
-                //    await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
-                //}
+                }                
             }
 
-            return RedirectToAction("Index", "Users"); 
-            
+            return RedirectToAction("Index", "Users");             
         }
 
         public IActionResult GetSuccess()
@@ -374,14 +357,7 @@ namespace FootballLeague.Controllers
             {
                 return NotFound();
             }
-
-            ////var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            ////var result = await _userHelper.ConfirmEmailAsync(user, decodedToken);
-            ////if (!result.Succeeded)
-            ////{
-            ////    return NotFound();
-            ////}
-
+            
             var model = new ResetPasswordViewModel
             {
                 UserId = userId,
@@ -425,5 +401,70 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
+                    return View(model);
+                }
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+                var link = this.Url.Action(
+                    "ResetOldPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Email, "Shop Password Reset", $"<h1>Shop Password Reset</h1>" +
+                $"To reset the password click in this link:</br></br>" +
+                $"<a href = \"{link}\">Reset Password</a>");
+
+                if (response.IsSuccess)
+                {
+                    this.ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                }
+
+                return this.View();
+
+            }
+
+            return this.View(model);
+        }
+
+        public IActionResult ResetOldPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetOldPassword(ResetOldPasswordViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.Username);
+            if (user != null)
+            {
+                var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    this.ViewBag.Message = "Password reset successful.";
+                    return View();
+                }
+
+                this.ViewBag.Message = "Error while resetting the password.";
+                return View(model);
+            }
+
+            this.ViewBag.Message = "User not found.";
+            return View(model);
+        }
     }
 }
