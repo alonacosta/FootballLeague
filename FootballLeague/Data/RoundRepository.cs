@@ -32,6 +32,25 @@ namespace FootballLeague.Data
 
             return list;
         }
+
+        public IEnumerable<SelectListItem> GetComboRoundsIsNotClosed()
+        {
+            var list = _context.Rounds
+                .Where(c => !c.IsClosed).Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a round...)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
         public async Task<Round> UpdateRoundAsync(Round round)
         {
 

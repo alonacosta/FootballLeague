@@ -26,12 +26,21 @@ namespace FootballLeague.Data
                 .Include(m => m.Round)
                 .OrderByDescending(m => m.StartDate);
         }
+        
         public async Task<List<Match>> GetMatchesWithRound(int roundId)
         {
             return await _context.Matches
                 .Include(m => m.Round)
                 .Where(m => m.RoundId == roundId)
                 .OrderByDescending(m => m.StartDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Match>> GetMatchesByClubNameAsync(string name)
+        {
+            return await _context.Matches
+                .Include(m => m.Round)
+                .Where(m => m.HomeTeam == name || m.AwayTeam == name)
                 .ToListAsync();
         }
 
@@ -128,8 +137,8 @@ namespace FootballLeague.Data
             var statistics = matches
                 .SelectMany(m => new[] 
                 {
-                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true, IsClosed = m.IsClosed },
-                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false, IsClosed = m.IsClosed},
+                    new { Club = m.HomeTeam, Scored = m.HomeScore, Conceded = m.AwayScore, IsHome = true, IsFinished = m.IsFinished },
+                    new { Club = m.AwayTeam, Scored = m.AwayScore, Conceded = m.HomeScore, IsHome = false, IsFinished = m.IsFinished},
                 })
                 .GroupBy(m => m.Club)
                 .Select(g =>
@@ -148,8 +157,8 @@ namespace FootballLeague.Data
                         GoalsScored = g.Sum(x => x.Scored),
                         GoalsConceded = g.Sum(x => x.Conceded),
                         Points = g.Sum(x => x.Scored > x.Conceded ? 3 : x.Scored == x.Conceded ? 1 : 0),
-                        Finished = g.Count(x => x.IsClosed),
-                        Scheduled = g.Count(x => !x.IsClosed),
+                        Finished = g.Count(x => x.IsFinished),
+                        Scheduled = g.Count(x => !x.IsFinished),
 					};
                 })
                 .OrderByDescending(s => s.Points)

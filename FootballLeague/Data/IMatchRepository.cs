@@ -11,6 +11,7 @@ namespace FootballLeague.Data
     {
         public IQueryable<Match> GetMatches();
         Task<List<Match>> GetMatchesWithRound(int roundId);
+        Task<List<Match>> GetMatchesByClubNameAsync(string name);
         Task<Match> GetMatchByIdAsync(int id);
         Task<Match> UpdateMatchAsync(Match match);
         Task<Match> CloseMatchAsync(Match match);

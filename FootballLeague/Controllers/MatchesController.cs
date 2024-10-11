@@ -155,7 +155,7 @@ namespace FootballLeague.Controllers
             {
                 ClubsHome = _clubRepository.GetComboClubs(),
                 ClubsAway = _clubRepository.GetComboClubs(),
-                Rounds = _roundRepository.GetComboRounds(),
+                Rounds = _roundRepository.GetComboRoundsIsNotClosed(),
             };
 
             return View(model);
@@ -202,7 +202,7 @@ namespace FootballLeague.Controllers
           
             model.ClubsHome = _clubRepository.GetComboClubs();
             model.ClubsAway = _clubRepository.GetComboClubs();
-            model.Rounds = _roundRepository.GetComboRounds();
+            model.Rounds = _roundRepository.GetComboRoundsIsNotClosed();
             return View(model);
         }
 

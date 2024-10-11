@@ -8,6 +8,7 @@ namespace FootballLeague.Data
     public interface IRoundRepository : IGenericRepository<Round>
     {
         IEnumerable<SelectListItem> GetComboRounds();
+        IEnumerable<SelectListItem> GetComboRoundsIsNotClosed();
         Task<Round> UpdateRoundAsync(Round round);
         Task<Round> CloseRoundAsync(Round round);
 

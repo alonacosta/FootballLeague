@@ -12,7 +12,27 @@
      <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" />
      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway:500,800" rel="stylesheet">
+  
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <!-- Syncfusion ASP.NET Core controls styles -->
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.1.48/fluent.css" />
+    <!-- Syncfusion ASP.NET Core controls scripts -->
+    <script src="https://cdn.syncfusion.com/ej2/27.1.48/dist/ej2.min.js"></script>
+
+      @* <link href="https://cdn.syncfusion.com/ej2/20.4.0.48/material.css" rel="stylesheet" />
+    <script src="https://cdn.syncfusion.com/ej2/20.4.0.48/dist/ej2.min.js"></script> *@
+   @*  <link href="https://cdn.syncfusion.com/ej2/20.1.55/styles/material.css" rel="stylesheet" />
+    <script src="https://cdn.syncfusion.com/ej2/20.1.55/dist/ej2.min.js"></script> *@
+    @* <script>
+        // Certifique-se de inicializar o componente, se necessário
+        document.addEventListener('DOMContentLoaded', function () {
+            var timeline = new ej.timelines.Timeline({
+                // Defina aqui as opções do seu Timeline, se necessário
+            });
+            timeline.appendTo('#default');
+        });
+    </script> *@
 </head>
 <body>
     <header>
@@ -43,9 +63,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="">Users</a></li>
-                                  @*   <li><a class="dropdown-item" asp-area="" asp-controller="" asp-action="">Roles</a></li> *@
-                                  @*   <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index">Countries and Cities</a></li> *@
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="">Users</a></li>                                
                                 </ul>
                             </li>
                         }
@@ -118,9 +136,10 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/flatpickr/flatpickr.min.js"></script>   
+    <script src="~/lib/flatpickr/flatpickr.min.js"></script>     
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <ejs-scripts></ejs-scripts>
 </body>
 </html>

@@ -321,3 +321,18 @@ a.more-link {
     font-size: 30px;
     text-transform: uppercase;
 }
+
+
+/* Forbidden page
+-------------------------------------------------- */
+.match-state {
+    font-weight: bold; /* Exemplo de estilo */
+}
+
+    .match-state.Scheduled {
+        color: green; /* Cor para "Won" */
+    }
+
+    .match-state.Finished {
+        color: red; /* Cor para "Lost" */
+    }

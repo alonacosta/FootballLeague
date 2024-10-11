@@ -1,4 +1,4 @@
-﻿@model FootballLeague.Data.Entities.Club
+﻿@model FootballLeague.Models.ClubViewModel
 
 @{
 	ViewData["Title"] = "ClubDetails";
@@ -41,7 +41,58 @@
 
 </div>
 <div>
-	<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
-	@* <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a> *@
+	<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit Club</a>	
 </div>
 
+<h5 class="mt-4">Matches</h5>
+
+
+@if (Model.TimeLineItems != null && Model.TimeLineItems.Count > 0)
+{
+	<div class="col-lg-6 control-section">
+		<div class="default-timeline-section">
+			<ejs-timeline id="default">
+				<e-timeline-items>	
+					@foreach (var item in Model.TimeLineItems)
+					{
+						<e-timeline-item content="@item.Content" cssClass="@item.CssClass" dotCss="@item.DotCss"></e-timeline-item>
+					}
+				</e-timeline-items>
+			</ejs-timeline>
+		</div>
+	</div>
+}
+else
+{
+	<p>No timeline items available.</p>
+}
+
+<style>
+	/* Customized dot color */
+	.default-timeline-section .state-progress {
+		outline-color: #007bff;
+		background-color: #007bff;
+		--dot-size: 25px;
+	}
+
+	.default-timeline-section .state-success {
+		outline-color: #28a745;
+		background-color: #28a745;
+	}
+
+	/* Customized connector color */
+	.default-timeline-section .completed.e-connector::after {
+		border-color: #28a745;
+	}
+
+	.default-timeline-section .intermediate.e-connector::after {
+		border-style: dashed;
+	}
+
+	.default-timeline-section {
+		height: 350px;
+		width: 290px;
+		margin: 30px auto;
+		overflow: visible;
+	}
+</style>

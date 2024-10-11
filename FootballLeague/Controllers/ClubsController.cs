@@ -21,21 +21,23 @@ namespace FootballLeague.Controllers
         private readonly IBlobHelper _blobHelper;        
         private readonly IConverterHelper _converterHelper;
         private readonly IStaffMemberRepository _staffMemberRepository;
-		
+        private readonly IMatchRepository _matchRepository;
 
-		public ClubsController(IClubRepository clubRepository,
+        public ClubsController(IClubRepository clubRepository,
             IUserHelper userHelper,
             IBlobHelper blobHelper,
             IConverterHelper converterHelper,
-            IStaffMemberRepository staffMemberRepository
+            IStaffMemberRepository staffMemberRepository,
+            IMatchRepository matchRepository
             )
         {       
             _clubRepository = clubRepository;
             _userHelper = userHelper;
             _blobHelper = blobHelper;           
             _converterHelper = converterHelper;
-            _staffMemberRepository = staffMemberRepository;			
-		}
+            _staffMemberRepository = staffMemberRepository;
+            _matchRepository = matchRepository;
+        }
 
         // GET: Clubs
         public IActionResult Index()
@@ -58,11 +60,92 @@ namespace FootballLeague.Controllers
                 return NotFound();
             }
 
-            return View(club);
+            var matches = await _matchRepository.GetMatchesByClubNameAsync(club.Name);
+
+            var items = new List<TimeLineItem>();
+
+            foreach(var match in matches )
+            {
+                var item = new TimeLineItem
+                {                   
+                    Content =$"{match.MatchName} \n{match.StartDate.ToString("dd.MM.yyyy HH:mm")} \n{match.State}",
+					DotCss = match.IsFinished ? "state-success" : "state-progress",
+                    CssClass = match.IsFinished ? "completed" : "intermediate",
+                };
+
+                items.Add(item);
+            }
+            var model = new ClubViewModel
+            {
+                Id = club.Id,
+                Name = club.Name,
+                Stadium = club.Stadium,
+                Capacity = club.Capacity,
+                ImageId = club.ImageId, 
+                HeadCoach = club.HeadCoach,
+                UpcomingMatches = matches,
+                TimeLineItems = items
+            };
+
+            return View(model);
         }
 
-        // GET: Clubs/Create
-        [Authorize(Roles = "Admin")]
+		// GET: Clubs/ClubDetails/5
+		[Authorize(Roles = "Representative")]
+		public async Task<IActionResult> ClubDetails()
+		{
+			var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			var staffMember = await _staffMemberRepository.GetStaffMemberAsync(user);
+			if (staffMember == null)
+			{
+				return NotFound();
+			}
+
+			var clubId = staffMember.ClubId;
+
+			var club = await _clubRepository.GetByIdAsync(clubId);
+			if (club == null)
+			{
+				return NotFound();
+			}
+
+			var matches = await _matchRepository.GetMatchesByClubNameAsync(club.Name);
+
+			var items = new List<TimeLineItem>();
+
+			foreach (var match in matches)
+			{
+				var item = new TimeLineItem
+				{
+					Content = $"{match.MatchName} \n{match.StartDate.ToString("dd.MM.yyyy HH:mm")} \n{match.State}",
+					DotCss = match.IsFinished ? "state-success" : "state-progress",
+					CssClass = match.IsFinished ? "completed" : "intermediate",
+				};
+
+				items.Add(item);
+			}
+			var model = new ClubViewModel
+			{
+				Id = club.Id,
+				Name = club.Name,
+				Stadium = club.Stadium,
+				Capacity = club.Capacity,
+				ImageId = club.ImageId,
+				HeadCoach = club.HeadCoach,
+				UpcomingMatches = matches,
+				TimeLineItems = items
+			};
+
+			return View(model);
+		}
+
+		// GET: Clubs/Create
+		[Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -186,38 +269,5 @@ namespace FootballLeague.Controllers
             
             return RedirectToAction(nameof(Index));
         }
-
-        [Authorize(Roles = "Representative")]
-        public async Task<IActionResult> ClubDetails()
-        {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            if (user == null) 
-            {
-                return NotFound();
-            }
-
-            var staffMember = await _staffMemberRepository.GetStaffMemberAsync(user);
-            if (staffMember == null)
-            {
-                return NotFound();
-            }
-
-            var clubId = staffMember.ClubId;
-
-            var club = await _clubRepository.GetByIdAsync(clubId);
-            if (club == null) 
-            {
-                return NotFound();
-            }
-
-            return View(club);                       
-        }
-
-        //public IActionResult ClubNotFound()
-        //{
-        //    return View();
-        //}
-
-       
     }
 }
