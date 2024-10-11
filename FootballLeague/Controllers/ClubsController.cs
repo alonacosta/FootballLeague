@@ -66,9 +66,11 @@ namespace FootballLeague.Controllers
 
             foreach(var match in matches )
             {
+                var score = (match.HomeTeam == club.Name) ? $"{match.HomeScore} : {match.AwayScore}" : $"{match.AwayScore} : {match.HomeScore}";
+                var result = match.IsFinished ? score : "";
                 var item = new TimeLineItem
                 {                   
-                    Content =$"{match.MatchName} \n{match.StartDate.ToString("dd.MM.yyyy HH:mm")} \n{match.State}",
+                    Content =$"{match.MatchName} \n{match.StartDate.ToString("dd.MM.yyyy HH:mm")} \n{match.State} \n{result}",
 					DotCss = match.IsFinished ? "state-success" : "state-progress",
                     CssClass = match.IsFinished ? "completed" : "intermediate",
                 };

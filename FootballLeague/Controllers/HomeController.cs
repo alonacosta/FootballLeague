@@ -1,4 +1,5 @@
-﻿using FootballLeague.Helpers;
+﻿using FootballLeague.Data;
+using FootballLeague.Helpers;
 using FootballLeague.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,23 @@ namespace FootballLeague.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserHelper _userHelper;
+        private readonly IMatchRepository _matchRepository;
 
-        public HomeController(ILogger<HomeController> logger, IUserHelper userHelper)
+        public HomeController(ILogger<HomeController> logger, IUserHelper userHelper, IMatchRepository matchRepository)
         {
             _logger = logger;
             _userHelper = userHelper;
+            _matchRepository = matchRepository;
         }
 
         public async Task<IActionResult> Index()
         {
+            var statistics = await _matchRepository.CalculateStatisticsAsync();
+
+            var model = new DashboardViewModel
+            {
+                Statistics = statistics,
+            };
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -35,10 +44,11 @@ namespace FootballLeague.Controllers
                 else
                 {
                    
-                    return View(); 
-                }               
+                    return View(model); 
+                }         
+
             }
-            return View();
+            return View(model);
         }
 
         public IActionResult Privacy()

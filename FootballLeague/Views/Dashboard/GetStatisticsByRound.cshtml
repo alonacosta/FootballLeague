@@ -4,7 +4,118 @@
 }
 
 <h2>Statistics</h2>
-<table class="table table-striped table-sm small mt-3">
+
+<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+    <ejs-grid id="grid" dataSource="@Model.Statistics" allowPaging="true" allowSorting="true">
+        <e-grid-pagesettings pageSize="20"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column field="Position" headerText="Position" template="#positionTemplate" textAlign="Center" width="80"></e-grid-column>
+            <e-grid-column headerText="Logo" template="#imageTemplate" width="50"></e-grid-column>
+            <e-grid-column field="ClubName" headerText="Club Name" textAlign="Center" width="120"></e-grid-column>
+            <e-grid-column field="TotalMatches" headerText="Total Matches" textAlign="Center" width="80"></e-grid-column>
+            <e-grid-column field="Wins" headerText="Wins" textAlign="Center" width="60"></e-grid-column>
+            <e-grid-column field="Losses" headerText="Losses" textAlign="Center" width="60"></e-grid-column>
+            <e-grid-column field="Draws" headerText="Draws" textAlign="Center" width="60"></e-grid-column>
+            <e-grid-column field="GoalsScored" headerText="Scored" textAlign="Center" width="70"></e-grid-column>
+            <e-grid-column field="GoalsConceded" headerText="Conceded" textAlign="Center" width="70"></e-grid-column>
+            <e-grid-column field="Points" headerText="Points" textAlign="Center" width="60"></e-grid-column>
+            <e-grid-column field="Finished" headerText="Played" template="#finishedTemplate" textAlign="Center" width="50"></e-grid-column>
+            <e-grid-column field="Scheduled" headerText="To Go" template="#scheduledTemplate" textAlign="Center" width="50"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+</div>
+
+<style>
+    .image img {
+        height: auto;
+        width: 30px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .e-activecolor {
+        color: white;
+        background-color: #62cb62;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+
+    .e-activecolortogo {
+        color: white;
+        background-color: #bbbbbb;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+
+    .e-positioncolor {
+        color: white;
+        background-color: #1b427a;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+</style>
+
+<script id="imageTemplate" type="text/x-template">
+    <div class="image">
+        <img src="${ImageFullPath}" alt="Logo Club" />
+    </div>
+</script>
+
+<script type="text/x-jsrender" id="positionTemplate">
+    ${positionNumber(Position)}
+</script>
+
+<script type="text/x-jsrender" id="finishedTemplate">
+    ${finishedMatch(Finished)}
+</script>
+
+<script type="text/x-jsrender" id="scheduledTemplate">
+    ${toGoMatch(Scheduled)}
+</script>
+
+<script type="text/javascript">
+
+    function positionNumber(statusText) {
+        var span = document.createElement('span');
+
+        span.className = 'e-positioncolor';
+
+        span.textContent = statusText;
+
+        return span.outerHTML;
+    }
+
+    function finishedMatch(statusText) {
+        var span = document.createElement('span');
+
+        span.className = 'e-activecolor';
+
+
+        span.textContent = statusText;
+
+        return span.outerHTML;
+    }
+
+    function toGoMatch(statusText) {
+        var span = document.createElement('span');
+
+        span.className = 'e-activecolortogo';
+
+
+        span.textContent = statusText;
+
+        return span.outerHTML;
+    }
+
+</script>
+
+
+
+
+
+
+
+@* <table class="table table-striped table-sm small mt-3">
     <thead>
         <tr>
             <th></th>
@@ -38,5 +149,5 @@
             </tr>
         }
     </tbody>
-</table>
+</table> *@
 
