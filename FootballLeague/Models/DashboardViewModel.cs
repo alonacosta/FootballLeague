@@ -14,6 +14,8 @@ namespace FootballLeague.Models
 
         public List<RoundStatisticsViewModel> RoundStatistics { get; set; }
 
+        public List<NextMatchViewModel> NextMatches { get; set; }
+
         
         
     }

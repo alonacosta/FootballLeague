@@ -28,44 +28,34 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> Index()
         {
             var statistics = await _matchRepository.CalculateStatisticsAsync();
+            var nextMatches = await _matchRepository.GetNextMatchesAsync();
 
             var model = new DashboardViewModel
             {
                 Statistics = statistics,
+                NextMatches = nextMatches
             };
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                
-                if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
-                {
-                    return RedirectToAction("Index", "Dashboard");
-                }
-                else
-                {
+            //    if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
+            //    {
+            //        return RedirectToAction("Index", "Dashboard");
+            //    }
+            //    else
+            //    {
                    
-                    return View(model); 
-                }         
+            //        return View(model); 
+            //    }         
 
-            }
+            //}
             return View(model);
         }
 
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
-
-        //[Route("error/404")]
-        //public IActionResult Error404()
-        //{
-        //    return View();
-        //}
+        }        
     }
 }

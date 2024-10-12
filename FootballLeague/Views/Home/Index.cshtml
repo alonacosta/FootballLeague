@@ -3,26 +3,65 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="row">
+    <div class="col-md-8">
+        <div class="col-lg-12 control-section partial-carousel-section">
+            <div class="e-sample-resize-container carousel-sample">
+                <ejs-carousel id="defaultCarousel" cssClass="partial-carousel" autoPlay=true partialVisible=true>
+                    <e-carousel-items>
+                        <e-carousel-item template="#templateItem1"></e-carousel-item>
+                        <e-carousel-item template="#templateItem2"></e-carousel-item>
+                        <e-carousel-item template="#templateItem3"></e-carousel-item>
+                        <e-carousel-item template="#templateItem4"></e-carousel-item>
+                        <e-carousel-item template="#templateItem5"></e-carousel-item>
+                    </e-carousel-items>
+                </ejs-carousel>
+            </div>
+        </div>
 
-<div class="col-lg-12 control-section partial-carousel-section">
-    <div class="e-sample-resize-container carousel-sample">
-        <ejs-carousel id="defaultCarousel" cssClass="partial-carousel" autoPlay=true partialVisible=true>
-            <e-carousel-items>
-                <e-carousel-item template="#templateItem1"></e-carousel-item>
-                <e-carousel-item template="#templateItem2"></e-carousel-item>
-                <e-carousel-item template="#templateItem3"></e-carousel-item>
-                <e-carousel-item template="#templateItem4"></e-carousel-item>
-                <e-carousel-item template="#templateItem5"></e-carousel-item>
-            </e-carousel-items>
-        </ejs-carousel>
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <h6 class="text-center">Classification</h6>
+            <ejs-grid id="grid" dataSource="@Model.Statistics" allowPaging="true" allowSorting="true">
+                <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
+                <e-grid-columns>
+                    <e-grid-column field="Position" headerText="Position" template="#positionTemplate" textAlign="Center" width="40"></e-grid-column>
+                    <e-grid-column template="#imageTemplate" width="40"></e-grid-column>
+                    <e-grid-column field="ClubName" headerText="Club" textAlign="Center" width="90"></e-grid-column>
+                    <e-grid-column field="TotalMatches" headerText="Total" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="Wins" headerText="Wins" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="Losses" headerText="Losses" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="Draws" headerText="Draws" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="GoalsScored" headerText="Scored" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="GoalsConceded" headerText="Conceded" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column field="Points" headerText="P" textAlign="Center" width="50" headerTextAlign="Center"></e-grid-column>
+                    <e-grid-column field="Finished" headerText="Played" template="#finishedTemplate" textAlign="Center" width="40"></e-grid-column>
+                    <e-grid-column field="Scheduled" headerText="To Go" template="#scheduledTemplate" textAlign="Center" width="40"></e-grid-column>
+                </e-grid-columns>
+            </ejs-grid>
+        </div>
+
+    </div>
+
+    @{
+        var limitedMatches = Model.NextMatches.Take(8);
+    }
+    <div class="col-md-4">
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">    
+            <ejs-grid id="grid2" dataSource="@limitedMatches" allowSorting="true">
+                <e-grid-columns>
+                    <e-grid-column headerText="Next Matches" textAlign="Center" template="#homeTeamTemplate" width="130"></e-grid-column>           
+                </e-grid-columns>
+            </ejs-grid>
+        </div>
     </div>
 </div>
 
 <style>
+    
     .partial-carousel-section .carousel-sample {
         margin: 0 auto 2em;
-        max-width: 75%;
-        height:400px;
+        max-width: 100%;
+        height:300px;
     }
 
     .partial-carousel .e-carousel-items .e-carousel-item .img-container {
@@ -42,6 +81,71 @@
         width: 100%;
     }
 
+    .image img {
+        height: auto;
+        width: 30px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+    
+    .e-activecolor {
+        color: white;
+        background-color: #62cb62;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+
+    .e-activecolortogo {
+        color: white;
+        background-color: #bbbbbb;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+
+    .e-positioncolor {
+        color: white;
+        background-color: #1b427a;
+        padding: 3px 9px;
+        border-radius: 50%;
+    }
+
+    .image-logo-team {
+        height: auto;
+        width: 30px;
+        border-radius: 50px;
+       
+    }
+
+    .team-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+
+    }
+
+    .match-container {
+        display: flex;
+        flex-direction: row;
+        font-weight: 500;
+
+    }
+
+    .date-paragraph {
+        font-size: 0.7rem;
+        margin-bottom: 4px; 
+        text-align: left;
+        color: #4B4952;
+    }
+
+    .team-name-home {
+        margin-right: 5px;
+        }
+
+    .team-away {
+        margin-left: 5px;
+        }
+
+
     @@media screen and (max-width: 480px) {
         .partial-carousel-section .carousel-sample {
             height: 110px;
@@ -56,6 +160,7 @@
     }
 </style>
 
+@* Carousel *@
 <script id="templateItem1" type="text/x-template">
     <figure class="img-container">
         <img src="https://footballleague.blob.core.windows.net/home/ball.jpeg" alt="bridge" style="height:100%; width: 100%" />
@@ -91,57 +196,7 @@
     </figure>
 </script>
 
-<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
-    <h6 class="text-center">Classification</h6>
-<ejs-grid id="grid" dataSource="@Model.Statistics" allowPaging="true" allowSorting="true">
-<e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
-    <e-grid-columns>
-        <e-grid-column field="Position" headerText="Position" template="#positionTemplate" textAlign="Center" width="80"></e-grid-column>
-            <e-grid-column headerText="Logo" template="#imageTemplate" width="50"></e-grid-column>
-            <e-grid-column field="ClubName" headerText="Club Name" textAlign="Center" width="120"></e-grid-column>
-            <e-grid-column field="TotalMatches" headerText="Total Matches" textAlign="Center" width="80"></e-grid-column>
-            <e-grid-column field="Wins" headerText="Wins" textAlign="Center" width="60"></e-grid-column>
-            <e-grid-column field="Losses" headerText="Losses" textAlign="Center" width="60"></e-grid-column>
-            <e-grid-column field="Draws" headerText="Draws" textAlign="Center" width="60"></e-grid-column>
-            <e-grid-column field="GoalsScored" headerText="Scored" textAlign="Center" width="70"></e-grid-column>
-            <e-grid-column field="GoalsConceded" headerText="Conceded" textAlign="Center" width="70"></e-grid-column>
-            <e-grid-column field="Points" headerText="Points" textAlign="Center" width="60"></e-grid-column>
-            <e-grid-column field="Finished" headerText="Played" template="#finishedTemplate"  textAlign="Center" width="50"></e-grid-column>
-            <e-grid-column field="Scheduled" headerText="To Go" template="#scheduledTemplate" textAlign="Center" width="50"></e-grid-column>
-    </e-grid-columns>
-</ejs-grid>
-</div>
-
-<style>
-    .image img {
-        height: auto;
-        width: 30px;
-        border-radius: 50px;
-        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
-    }
-
-    .e-activecolor {
-        color: white;
-        background-color: #62cb62;
-        padding: 3px 9px; 
-        border-radius: 50%;
-    }
-
-    .e-activecolortogo {
-        color: white;
-        background-color: #bbbbbb;
-        padding: 3px 9px;
-        border-radius: 50%;
-    }
-
-    .e-positioncolor {
-        color: white;
-        background-color: #1b427a;
-        padding: 3px 9px;
-        border-radius: 50%;
-    }
-</style>
-
+@* Statistics *@
 <script id="imageTemplate" type="text/x-template">
     <div class="image">
         <img src="${ImageFullPath}" alt="Logo Club" />
@@ -153,15 +208,21 @@
 </script>
 
 <script type="text/x-jsrender" id="finishedTemplate">
-	${finishedMatch(Finished)}
+    ${finishedMatch(Finished)}
 </script>
 
 <script type="text/x-jsrender" id="scheduledTemplate">
-	${toGoMatch(Scheduled)}
+    ${toGoMatch(Scheduled)}
 </script>
 
-<script type="text/javascript">
+@* Matches *@
+<script type="text/x-jsrender" id="homeTeamTemplate">
+    ${match(ImagePathHomeTeam, ImagePathAwayTeam, HomeTeamName, AwayTeamName, StartDate)}
+</script>
 
+<script type="text/javascript">    
+
+    // Statistics
     function positionNumber(statusText) {
         var span = document.createElement('span');
 
@@ -173,27 +234,83 @@
     }
 
     function finishedMatch(statusText) {
-        var span = document.createElement('span');       
-       
-            span.className = 'e-activecolor'; 
-      
-            
+        var span = document.createElement('span');
+
+        span.className = 'e-activecolor';
+
+
         span.textContent = statusText;
 
         return span.outerHTML;
     }
 
-     function toGoMatch(statusText) {
-        var span = document.createElement('span');       
-       
-            span.className = 'e-activecolortogo'; 
-      
-            
+    function toGoMatch(statusText) {
+        var span = document.createElement('span');
+
+        span.className = 'e-activecolortogo';
+
+
         span.textContent = statusText;
 
         return span.outerHTML;
     }
 
- 
+    // Matches
+     function match(imgHome, imgAway, textHome, textAway, date) {
+         var div = document.createElement('div');
+         var divMatch = document.createElement('div');
+         var parag = document.createElement('p');
+         var divHome = document.createElement('div');
+         var spanHome = document.createElement('span');
+         var imageHome = document.createElement('img');
+         var divAway = document.createElement('div');
+         var spanAway = document.createElement('span');
+         var imageAway = document.createElement('img');
+         var span = document.createElement('span');
+
+        div.className = 'team-container'; 
+        divMatch.className = 'match-container';
+        divHome.className = 'team-home';
+        divAway.className = 'team-away';
+        spanHome.className = 'team-name-home';
+        spanAway.className = 'team-name';       
+        imageHome.className = 'image-logo-team'
+        imageAway.className = 'image-logo-team'
+         parag.className = 'date-paragraph'
+
+        var formattedDate = new Date(date).toLocaleDateString('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }) + ' ' + new Date(date).toLocaleTimeString('pt-PT', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+        parag.textContent = formattedDate;
+        spanHome.textContent = textHome;
+        imageHome.src = imgHome;
+        spanAway.textContent = textAway;
+        imageAway.src = imgAway;
+        span.textContent = ' - '
+
+         divHome.appendChild(imageHome);
+         divHome.appendChild(spanHome);
+         divHome.appendChild(span);
+         divAway.appendChild(imageAway);
+         divAway.appendChild(spanAway);
+         divMatch.appendChild(divHome);
+         divMatch.appendChild(divAway);
+
+         div.appendChild(parag);
+         div.appendChild(divMatch);
+
+        return div.outerHTML;
+    }
 </script>
+
+
+
+
+
 

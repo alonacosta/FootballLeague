@@ -11,12 +11,13 @@ namespace FootballLeague.Data
     {
         public IQueryable<Match> GetMatches();
         Task<List<Match>> GetMatchesWithRound(int roundId);
-        Task<List<Match>> GetMatchesByClubNameAsync(string name);
+        Task<List<Match>> GetMatchesByClubNameAsync(string name);        
         Task<Match> GetMatchByIdAsync(int id);
         Task<Match> UpdateMatchAsync(Match match);
         Task<Match> CloseMatchAsync(Match match);
         IEnumerable<SelectListItem> GetComboMatches();
         List<Match> GetMatchesReadyToClose();
+        Task<List<NextMatchViewModel>> GetNextMatchesAsync();
         Task<List<StatisticsViewModel>> CalculateStatisticsAsync();
         Task<List<StatisticsViewModel>> CalculateStatisticsFromRoundAsync(int roundId);
     }

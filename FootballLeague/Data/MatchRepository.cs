@@ -26,6 +26,7 @@ namespace FootballLeague.Data
                 .Include(m => m.Round)
                 .OrderByDescending(m => m.StartDate);
         }
+
         
         public async Task<List<Match>> GetMatchesWithRound(int roundId)
         {
@@ -43,6 +44,8 @@ namespace FootballLeague.Data
                 .Where(m => m.HomeTeam == name || m.AwayTeam == name)
                 .ToListAsync();
         }
+
+
 
         public async Task<Match> GetMatchByIdAsync(int id)
         {
@@ -124,6 +127,39 @@ namespace FootballLeague.Data
                 .ToList();
 
             return matchesReadyToClose;            
+        }
+
+        public async Task<List<NextMatchViewModel>> GetNextMatchesAsync()
+        {
+          var nextMatches =  await _context.Matches
+                .Include(m => m.Round)
+                .Where(m => !m.IsFinished)
+                .OrderBy(m => m.StartDate)
+                .ToListAsync();         
+           
+
+            var listNextMatches = new List<NextMatchViewModel>();
+
+            foreach (var match in nextMatches) 
+            {
+                var clubHome = await _clubRepository.GetClubeByNameAsync(match.HomeTeam);
+                var clubAway = await _clubRepository.GetClubeByNameAsync(match.AwayTeam);
+
+                var nextMatch = new NextMatchViewModel
+                {
+                    HomeTeamName = match.HomeTeam,
+                    AwayTeamName = match.AwayTeam,
+                    StartDate = match.StartDate,   
+                    ImageIdHomeTeam = clubHome.ImageId,
+                    ImageIdAwayTeam = clubAway.ImageId,
+                    ImagePathHomeTeam = clubHome.ImageFullPath,
+                    ImagePathAwayTeam = clubAway.ImageFullPath,
+                };
+
+                listNextMatches.Add(nextMatch);
+            }
+
+            return listNextMatches;
         }
 
         public async Task<List<StatisticsViewModel>> CalculateStatisticsAsync()

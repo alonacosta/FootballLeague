@@ -49,9 +49,7 @@ namespace FootballLeague.Data.Entities
         public string MatchName => $"{HomeTeam} - {AwayTeam}";
 
         [Display(Name = "ResultHome")]
-        public string MatchResultHome =>  $"{HomeScore} : {AwayScore}" ;
+        public string MatchResult =>  $"{HomeScore} : {AwayScore}" ;
 
-        [Display(Name = "ResultAway")]
-        public string MatchResultAway => $"{AwayScore} : {HomeScore}";
     }
 }
