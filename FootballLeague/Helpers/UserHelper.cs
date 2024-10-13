@@ -1,6 +1,7 @@
 ﻿using FootballLeague.Data.Entities;
 using FootballLeague.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootballLeague.Helpers
@@ -28,6 +29,28 @@ namespace FootballLeague.Helpers
         public async Task AddUserToRoleAsync(User user, string roleName)
         {
            await _userManager.AddToRoleAsync(user, roleName);
+        }
+
+        public async Task UpdateUserRoleAsync(User user, string roleName)
+        {
+            await CheckRoleAsync(roleName);
+
+            if (!await IsUserInRoleAsync(user, roleName))
+            {               
+                await _userManager.AddToRoleAsync(user, roleName);
+            }
+            else
+            {
+                var currentRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+                if (currentRole != null)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, currentRole);
+                }
+
+                await _userManager.AddToRoleAsync(user, roleName);
+            }           
+           
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballLeague.Controllers
 {
+    [Authorize(Roles = "Representative")]
     public class FunctionsController : Controller
     {     
         private readonly IFunctionRepository _functionRepository;
@@ -43,7 +45,7 @@ namespace FootballLeague.Controllers
             return View(function);
         }
 
-        // GET: Functions/Create
+        // GET: Functions/Create      
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Create([Bind("Id,NamePosition")] Function function)
         {
             if (ModelState.IsValid)
@@ -64,7 +67,7 @@ namespace FootballLeague.Controllers
             return View(function);
         }
 
-        // GET: Functions/Edit/5
+        // GET: Functions/Edit/5       
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +88,7 @@ namespace FootballLeague.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]       
         public async Task<IActionResult> Edit(int id, [Bind("Id,NamePosition")] Function function)
         {
             if (id != function.Id)
@@ -116,7 +119,7 @@ namespace FootballLeague.Controllers
             return View(function);
         }
 
-        // GET: Functions/Delete/5
+        // GET: Functions/Delete/5        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,17 +139,35 @@ namespace FootballLeague.Controllers
 
         // POST: Functions/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]       
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var function = await _functionRepository.GetByIdAsync(id);
-            if (function == null)
+            if (function.NamePosition == "Representative" || function.NamePosition == "SportsSecretary" || function.NamePosition == "Try")
             {
-                return NotFound();
+                ViewBag.Message = "You can delete this position, don´t have permission!";
+                return View();
             }
-            await _functionRepository.DeleteAsync(function);
+            else
+            {
+                 try
+                {
+                    await _functionRepository.DeleteAsync(function);
            
-            return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                    {
+                        ViewBag.ErrorTitle = $"{function.NamePosition} is probably being used!!!";
+                        ViewBag.ErrorMessage = $"{function.NamePosition} can't be deleted because there are users that use it <br/>" +
+                        $"First try to change this function they have to another," +
+                        $" and delete it again";
+                    }
+                    return View("Error");
+                }
+            } 
         }        
     }
 }

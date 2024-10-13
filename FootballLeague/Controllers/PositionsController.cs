@@ -13,13 +13,11 @@ namespace FootballLeague.Controllers
 {
 	[Authorize(Roles = "Representative")]
 	public class PositionsController : Controller
-    {
-        private readonly DataContext _context;
+    {       
         private readonly IPositionRepository _positionRepository;
 
-        public PositionsController(DataContext context, IPositionRepository positionRepository)
-        {
-            //_context = context;
+        public PositionsController(IPositionRepository positionRepository)
+        {            
             _positionRepository = positionRepository;
         }
 
@@ -57,6 +55,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Create([Bind("Id,Name")] Position position)
         {
             if (ModelState.IsValid)
@@ -68,6 +67,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Positions/Edit/5
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,6 +88,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Position position)
         {
             if (id != position.Id)
@@ -118,6 +119,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Positions/Delete/5
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,13 +139,27 @@ namespace FootballLeague.Controllers
         // POST: Positions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Representative")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var position = await _positionRepository.GetByIdAsync(id);
-            
-            await _positionRepository.DeleteAsync(position);
-            
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _positionRepository.DeleteAsync(position);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{position.Name} is probably being used!!!";
+                    ViewBag.ErrorMessage = $"{position.Name} can't be deleted because there are players that use it <br/>" +
+                    $"First try deleting all the players that are using it," +
+                    $" and delete it again";
+                }
+                return View("Error");
+            }            
         }        
     }
 }

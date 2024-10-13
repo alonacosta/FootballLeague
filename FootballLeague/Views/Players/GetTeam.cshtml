@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <h2>Team Details</h2>
     <hr />
-
+    <p> @ViewBag.Message</p>
     <div class="container mt-4">
         @foreach(var item in Model.Select(m => m.PositionName).Distinct())
         {            

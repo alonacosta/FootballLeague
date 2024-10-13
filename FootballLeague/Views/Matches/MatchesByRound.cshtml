@@ -54,10 +54,34 @@
                     @Html.DisplayFor(modelItem => item.State)
                 </td>
 
-                <td>
+                @* <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
                     <a asp-action="IncidentsFromMatch" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
                    
+                </td> *@
+
+                <td>
+                    <div class="d-block">
+                        <div>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                            }
+                            <a asp-action="Index" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-indent"></i> Incidents</a>
+
+                        </div>
+                        <div class="mt-2">
+
+                            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+                            {
+
+                                <a asp-action="UpdateScore" asp-controller="Matches" asp-route-id="@item.Id" class="btn btn-outline-success"><i class="fas fa-futbol"></i> Add Scores</a>
+                                <a asp-action="Create" asp-controller="Incidents" asp-route-id="@item.Id" class="btn btn-outline-success">Add Incident</a>
+                            }
+                        </div>
+                    </div>
                 </td>
             </tr>
         }

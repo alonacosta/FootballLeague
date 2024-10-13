@@ -70,6 +70,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Incidents/Create
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Create(int? id)
         {
             if (id == null)
@@ -96,6 +97,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Create(IncidentViewModel model)
         {
             if (ModelState.IsValid)
@@ -115,12 +117,12 @@ namespace FootballLeague.Controllers
                
                 return RedirectToAction(nameof(Index));
             }
-            //ViewData["MatchId"] = new SelectList(_context.Matches, "Id", "Id", incident.MatchId);
-            //ViewData["PlayerId"] = new SelectList(_context.Players, "Id", "Name", incident.PlayerId);
+            
             return View(model);
         }
 
         // GET: Incidents/Edit/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -137,16 +139,14 @@ namespace FootballLeague.Controllers
             var model = new IncidentViewModel
             {
                 MatchId = incident.MatchId,
-                Match = incident.Match,
+                Match = incident.Match,                
                 OccurenceName = incident.OccurenceName,
                 EventTime = incident.EventTime,
                 Player = incident.Player,
-                PlayerId = incident.PlayerId,
-                //Matches = _matchRepository.GetComboMatches(),
+                PlayerId = incident.PlayerId,               
                 Players = _playerRepository.GetComboPlayers(),
             };
-            //ViewData["MatchId"] = new SelectList(_context.Matches, "Id", "Id", incident.MatchId);
-            //ViewData["PlayerId"] = new SelectList(_context.Players, "Id", "Name", incident.PlayerId);
+            
             return View(model);
         }
 
@@ -155,6 +155,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(IncidentViewModel model)
         {
             
@@ -193,6 +194,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Incidents/Delete/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -215,6 +217,7 @@ namespace FootballLeague.Controllers
         // POST: Incidents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var incident = await _incidentRepository.GetIncidentByIdAsync(id);

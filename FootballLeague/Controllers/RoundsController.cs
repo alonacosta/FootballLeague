@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballLeague.Controllers
 {
@@ -44,6 +45,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Rounds/Create
+        [Authorize(Roles = "SportsSecretary")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Create([Bind("Id,Name,DateStart,DateEnd,IsClosed")] Round round)
         {
             if (ModelState.IsValid)
@@ -67,6 +70,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Rounds/Edit/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,6 +91,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(int id, /*[Bind("Id,Name,DateStart,DateEnd,IsClosed")]*/ Round round)
         {
             if (id != round.Id)
@@ -117,6 +122,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Rounds/CloseRound/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CloseRound(int? id)
         {
             if (id == null)
@@ -137,6 +143,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CloseRound(int id, Round round)
         {
             if (id != round.Id)
@@ -167,6 +174,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Rounds/Delete/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -186,16 +194,28 @@ namespace FootballLeague.Controllers
         // POST: Rounds/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var round = await _roundRepository.GetByIdAsync(id);
-            if (round == null)
+            try
             {
-                return NotFound();
+                await _roundRepository.DeleteAsync(round);
+
+                return RedirectToAction(nameof(Index));
             }
-            await _roundRepository.DeleteAsync(round);
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{round.Name} is probably being used!!!";
+                    ViewBag.ErrorMessage = $"{round.Name} can't be deleted because there are matches that use it <br/>" +
+                    $"First try deleting all matches that are using it," +
+                    $" and delete it again";
+                }
+                return View("Error");
+            }
             
-            return RedirectToAction(nameof(Index));
         }        
     }
 }

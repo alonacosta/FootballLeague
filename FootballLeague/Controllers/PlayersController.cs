@@ -262,11 +262,25 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var player = await _playerRepository.GetByIdAsync(id);
-            await _playerRepository.DeleteAsync(player);
-           
-            return RedirectToAction(nameof(Index));
-        }
 
+            try
+            {
+                await _playerRepository.DeleteAsync(player);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{player.Name} is probably being used!!!";
+                    ViewBag.ErrorMessage = $"{player.Name} can't be deleted because there are incidents that use it <br/>" +
+                    $"First try deleting all the incidents that player has," +
+                    $" and delete it again";
+                }
+                return View("Error");
+            }            
+        }
 
         //GET
         //[HttpGet("GetTeam/{id}")]
@@ -288,12 +302,7 @@ namespace FootballLeague.Controllers
                 players = _playerRepository
                           .GetAllPlayersDoClubWithPosition(club.Id, position.Id)
                           .OrderBy(p => p.Name)
-                          .ToList();
-
-                if (players == null)
-                {
-                    return NotFound();
-                }
+                          .ToList();               
 
                 foreach (var player in players)
                 {
@@ -314,7 +323,7 @@ namespace FootballLeague.Controllers
 
             if (!teamViewModels.Any())
             {
-                return NotFound();
+                ViewBag.Message = "Club has no players yet";
             }
 
             return View(teamViewModels);

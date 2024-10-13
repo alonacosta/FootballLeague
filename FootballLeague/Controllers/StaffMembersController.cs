@@ -32,7 +32,6 @@ namespace FootballLeague.Controllers
             _functionRepository = functionRepository;
             _blobHelper = blobHelper;
         }
-
        
         public async Task<IActionResult> Index()
         {
@@ -130,7 +129,7 @@ namespace FootballLeague.Controllers
             if (functions == null)
             {
                 return NotFound();
-            }
+            }            
 
             var model = new RoleOfStaffMemberViewModel
             {
@@ -171,6 +170,8 @@ namespace FootballLeague.Controllers
                     staffMember.FunctionId = model.FunctionId;
                     await _staffMemberRepository.UpdateAsync(staffMember);
                    
+                    var function = await _functionRepository.GetByIdAsync(model.FunctionId);
+                    if(function == null) { return NotFound(); } 
 
                     var user = staffMember.User;
                     if (user != null)
@@ -189,7 +190,10 @@ namespace FootballLeague.Controllers
                         {
                             ModelState.AddModelError(string.Empty, response.Errors.ToString());
                         }
-                    }
+
+                        var namePosition = function.NamePosition;
+                        await _userHelper.UpdateUserRoleAsync(user, namePosition);
+                    }  
                 }
                 catch (DbUpdateConcurrencyException) 
                 {

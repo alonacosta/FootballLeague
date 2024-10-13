@@ -8,22 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using FootballLeague.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballLeague.Controllers
 {
     public class MatchesController : Controller
-    {
-        private readonly DataContext _context;
+    {       
         private readonly IMatchRepository _matchRepository;
         private readonly IClubRepository _clubRepository;
         private readonly IRoundRepository _roundRepository;
 
-        public MatchesController(DataContext context,
-            IMatchRepository matchRepository,
+        public MatchesController(IMatchRepository matchRepository,
             IClubRepository clubRepository,
             IRoundRepository roundRepository)
-        {
-            _context = context;
+        {          
             _matchRepository = matchRepository;
             _clubRepository = clubRepository;
             _roundRepository = roundRepository;
@@ -149,6 +148,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/Create
+        [Authorize(Roles = "SportsSecretary")]
         public IActionResult Create()
         {           
             var model = new MatchViewModel
@@ -166,6 +166,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Create(MatchViewModel model)
         {           
             var homeTeam = await _clubRepository.GetByIdAsync(model.HomeTeamId);
@@ -207,6 +208,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/Edit/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -249,6 +251,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Edit(MatchViewModel model)
         {
             if (ModelState.IsValid)
@@ -303,6 +306,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/EditScore/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> UpdateScore(int? id)
         {
             if (id == null)
@@ -324,6 +328,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> UpdateScore(int id, Match match)
         {
             if (id != match.Id)
@@ -354,6 +359,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/CloseMatch/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> CloseMatch(int? id)
         {
             if (id == null)
@@ -375,6 +381,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> CloseMatch(int id, Match match)
         {
             if (id != match.Id)
@@ -405,6 +412,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/Delete/5
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -446,17 +454,28 @@ namespace FootballLeague.Controllers
         // POST: Matches/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SportsSecretary")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var match = await _matchRepository.GetByIdAsync(id);
-            //if(match.IsClosed == true)
-            //{
-            //    ViewBag.ErrorTitle = $"{match.HomeTeam} {match.AwayTeam} already finished!!!";
-            //    ViewBag.ErrorMessage = $"{match.HomeTeam} {match.AwayTeam}  can't be deleted  <br/>";
-            //}
-            await _matchRepository.DeleteAsync(match);
-           
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _matchRepository.DeleteAsync(match);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{match.MatchName} is probably being used!!!";
+                    ViewBag.ErrorMessage = $"{match.MatchName} can't be deleted because there are incidents that use it <br/>" +
+                    $"First try to delete all incidents that it has," +
+                    $" and delete it again";
+                }
+                return View("Error");
+            }
+            
         }
 
         [HttpGet]

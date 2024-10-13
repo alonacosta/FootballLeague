@@ -267,9 +267,24 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var club = await _clubRepository.GetByIdAsync(id);
-            await _clubRepository.DeleteAsync(club);
+            try
+            {               
+                await _clubRepository.DeleteAsync(club);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex) 
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{club.Name} is probably being used!!!";
+                    ViewBag.ErrorMessage = $"{club.Name} can't be deleted because there are players that use it <br/>" +
+                    $"First try deleting all the players that are using it," +
+                    $" and delete it again";
+                }
+                return View("Error");
+            }
             
-            return RedirectToAction(nameof(Index));
         }
     }
 }

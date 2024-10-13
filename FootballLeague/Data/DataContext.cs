@@ -1,6 +1,7 @@
 ﻿using FootballLeague.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FootballLeague.Data
 {
@@ -20,5 +21,20 @@ namespace FootballLeague.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
 		{
 		}
-	}
+
+
+        protected override async void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var cascadeFKs = modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys())
+                .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+            foreach (var fk in cascadeFKs)
+            {
+                fk.DeleteBehavior = DeleteBehavior.NoAction;
+            }
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
 }
