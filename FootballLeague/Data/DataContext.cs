@@ -34,6 +34,26 @@ namespace FootballLeague.Data
                 fk.DeleteBehavior = DeleteBehavior.NoAction;
             }
 
+            modelBuilder.Entity<Club>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Round>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Function>()
+                .HasIndex(c => c.NamePosition)
+                .IsUnique();
+
+            modelBuilder.Entity<Position>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            //modelBuilder.Entity<Player>()
+            //    .HasIndex(c => c.Name)
+            //    .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
     }

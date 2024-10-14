@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace FootballLeague.Controllers
 {
@@ -15,10 +16,13 @@ namespace FootballLeague.Controllers
     public class FunctionsController : Controller
     {     
         private readonly IFunctionRepository _functionRepository;
+        private readonly IFlashMessage _flashMessage;
 
-        public FunctionsController(IFunctionRepository functionRepository)
+        public FunctionsController(IFunctionRepository functionRepository,
+            IFlashMessage flashMessage)
         {           
            _functionRepository = functionRepository;
+            _flashMessage = flashMessage;
         }
 
         // GET: Functions
@@ -60,9 +64,18 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> Create([Bind("Id,NamePosition")] Function function)
         {
             if (ModelState.IsValid)
-            { await _functionRepository.CreateAsync(function);
-               
-                return RedirectToAction(nameof(Index));
+            { 
+                try
+                {
+                    await _functionRepository.CreateAsync(function);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    _flashMessage.Danger("This Function already exist!");
+                }
+                return View(function);
             }
             return View(function);
         }

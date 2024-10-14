@@ -11,6 +11,7 @@ using FootballLeague.Helpers;
 using FootballLeague.Models;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace FootballLeague.Controllers
 {
@@ -22,13 +23,15 @@ namespace FootballLeague.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IStaffMemberRepository _staffMemberRepository;
         private readonly IMatchRepository _matchRepository;
+        private readonly IFlashMessage _flashMessage;
 
         public ClubsController(IClubRepository clubRepository,
             IUserHelper userHelper,
             IBlobHelper blobHelper,
             IConverterHelper converterHelper,
             IStaffMemberRepository staffMemberRepository,
-            IMatchRepository matchRepository
+            IMatchRepository matchRepository,
+            IFlashMessage flashMessage
             )
         {       
             _clubRepository = clubRepository;
@@ -37,6 +40,7 @@ namespace FootballLeague.Controllers
             _converterHelper = converterHelper;
             _staffMemberRepository = staffMemberRepository;
             _matchRepository = matchRepository;
+            _flashMessage = flashMessage;
         }
 
         // GET: Clubs
@@ -163,16 +167,25 @@ namespace FootballLeague.Controllers
         {    
             if (ModelState.IsValid)
             {
-                Guid imageId = Guid.Empty;
-
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                try
                 {
-                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "clubs");                }
+                    Guid imageId = Guid.Empty;
 
-                var club = _converterHelper.ToClub(model, imageId, true);
-                
-                await _clubRepository.CreateAsync(club);
-                return RedirectToAction(nameof(Index));
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "clubs");
+                    }
+
+                    var club = _converterHelper.ToClub(model, imageId, true);
+
+                    await _clubRepository.CreateAsync(club);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    _flashMessage.Danger("This Club already exist!");
+                }
+                return View(model);
             }
             return View(model);
         }

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Vereyon.Web;
 
 namespace FootballLeague.Controllers
 {
@@ -15,10 +17,13 @@ namespace FootballLeague.Controllers
 	public class PositionsController : Controller
     {       
         private readonly IPositionRepository _positionRepository;
+        private readonly IFlashMessage _flashMessage;
 
-        public PositionsController(IPositionRepository positionRepository)
+        public PositionsController(IPositionRepository positionRepository,
+            IFlashMessage flashMessage)
         {            
             _positionRepository = positionRepository;
+            _flashMessage = flashMessage;
         }
 
         // GET: Positions
@@ -60,8 +65,17 @@ namespace FootballLeague.Controllers
         {
             if (ModelState.IsValid)
             {
-               await _positionRepository.CreateAsync(position);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _positionRepository.CreateAsync(position);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    _flashMessage.Danger("This Position already exist!");
+                }
+                return View(position);
+
             }
             return View(position);
         }

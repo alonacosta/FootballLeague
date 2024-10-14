@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FootballLeague.Data;
 using FootballLeague.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace FootballLeague.Controllers
 {
@@ -15,10 +16,13 @@ namespace FootballLeague.Controllers
     {
         
         private readonly IRoundRepository _roundRepository;
+        private readonly IFlashMessage _flashMessage;
 
-        public RoundsController(IRoundRepository roundRepository)
+        public RoundsController(IRoundRepository roundRepository, 
+            IFlashMessage flashMessage)
         {           
             _roundRepository = roundRepository;
+            _flashMessage = flashMessage;
         }
 
         // GET: Rounds
@@ -61,10 +65,19 @@ namespace FootballLeague.Controllers
         {
             if (ModelState.IsValid)
             {
-                round.IsClosed = false;
-                await _roundRepository.CreateAsync(round);
-                
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    round.IsClosed = false;
+                    await _roundRepository.CreateAsync(round);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    _flashMessage.Danger("This Round already exist!");
+                }
+                return View(round);
+
             }
             return View(round);
         }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using Vereyon.Web;
 
 namespace FootballLeague
 {
@@ -62,6 +63,8 @@ namespace FootballLeague
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddFlashMessage();
 
             services.AddTransient<SeedDb>();
             services.AddScoped<IUserHelper, UserHelper>();
