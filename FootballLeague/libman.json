@@ -5,6 +5,10 @@
     {
       "library": "flatpickr@4.6.13",
       "destination": "wwwroot/lib/flatpickr/"
+    },
+    {
+      "library": "datatables.net@2.1.8",
+      "destination": "wwwroot/lib/datatables.net/"
     }
   ]
 }

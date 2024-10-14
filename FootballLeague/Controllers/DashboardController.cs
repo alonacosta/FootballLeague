@@ -62,7 +62,11 @@ namespace FootballLeague.Controllers
 
         public async Task<IActionResult> GetStatisticsByRound(int? id)
         {
-            var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(id.Value);
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(id.Value);           
 
             var model = new DashboardViewModel
             {
@@ -71,26 +75,26 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetAllStatisticsByRound()
-        {
-            var rounds = _roundRepository.GetAllRounds();   
-            var allRoundsStatisticts = new List<RoundStatisticsViewModel>();
+        //public async Task<IActionResult> GetAllStatisticsByRound()
+        //{
+        //    var rounds = _roundRepository.GetAllRounds();   
+        //    var allRoundsStatisticts = new List<RoundStatisticsViewModel>();
 
-            foreach (var round in rounds)
-            {
-                var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(round.Id);
-                var roundStatistics = new RoundStatisticsViewModel
-                {
-                    RoundName = round.Name,
-                    Statistics = statistics,
-                };
-                allRoundsStatisticts.Add(roundStatistics);
-            }
-            var dashboardAllStat = new DashboardViewModel
-            {
-                RoundStatistics = allRoundsStatisticts,
-            };
-            return View(dashboardAllStat);
-        }
+        //    foreach (var round in rounds)
+        //    {
+        //        var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(round.Id);
+        //        var roundStatistics = new RoundStatisticsViewModel
+        //        {
+        //            RoundName = round.Name,
+        //            Statistics = statistics,
+        //        };
+        //        allRoundsStatisticts.Add(roundStatistics);
+        //    }
+        //    var dashboardAllStat = new DashboardViewModel
+        //    {
+        //        RoundStatistics = allRoundsStatisticts,
+        //    };
+        //    return View(dashboardAllStat);
+        //}
     }
 }

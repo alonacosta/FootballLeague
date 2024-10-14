@@ -2,44 +2,44 @@
 @{
     ViewData["Title"] = "ChangeUser";
 }
+<div class="shadow-none p-3 mb-5 bg-body-tertiary rounded bg-white">
+    <h3>ChangeUser</h3>
+    <div class="row" >
+        <div class="col-md-4 mt-5 d-flex justify-content-center">
+            <img src="@Url.Content(Model.ImagePath)" alt="User pfoto" class="img-fluid rounded" style="width:200px;height:200px;max-width:100%;max-height:auto;" />
+        </div>
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly"></div>        
+                <input type="hidden" asp-for="ImageProfile" />
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label"></label>
+                    <input asp-for="ImageFile" class="form-control" type="file" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName">First Name</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName">Last Name</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-warning"></span>
+                </div>            
+                <div class="form-group">
+                    <label asp-for="PhoneNumber">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-warning"></span>
+                </div>
 
-<h2>ChangeUser</h2>
-<div class="row" >
-    <div class="col-md-4 mt-5 d-flex justify-content-center">
-        <img src="@Url.Content(Model.ImagePath)" alt="User pfoto" class="img-fluid rounded" style="width:200px;height:200px;max-width:100%;max-height:auto;" />
-    </div>
-    <div class="col-md-6">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly"></div>        
-            <input type="hidden" asp-for="ImageProfile" />
-            <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" class="form-control" type="file" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FirstName">First Name</label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-warning"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName">Last Name</label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-warning"></span>
-            </div>            
-            <div class="form-group">
-                <label asp-for="PhoneNumber">Phone Number</label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-warning"></span>
-            </div>
-
-            <div class="form-group">
-               @*  <input type="submit" value="Update" class="btn btn-primary" /> *@
-                <button type="submit" class="btn btn-primary"><i class="fas fa-user-edit"></i> Update</button>
-                <a asp-action="ChangePassword" class="btn btn-success"><i class="fas fa-unlock"></i> Change Password</a>
-            </div>
-            <div class="text-success">@ViewBag.UserMessage</div>
-        </form>
+                <div class="form-group">                   
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-user-edit"></i> Update</button>
+                    <a asp-action="ChangePassword" class="btn btn-success"><i class="fas fa-unlock"></i> Change Password</a>
+                </div>
+                <div class="text-success">@ViewBag.UserMessage</div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
+<div class="row shadow-sm p-3 mb-5 bg-body-tertiary rounded bg-white">
     <div class="col-md-8">
         <div class="col-lg-12 control-section partial-carousel-section">
             <div class="e-sample-resize-container carousel-sample">
@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded bg-white">
             <h6 class="text-center">Classification</h6>
             <ejs-grid id="grid" dataSource="@Model.Statistics" allowPaging="true" allowSorting="true">
                 <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
@@ -46,7 +46,7 @@
         var limitedMatches = Model.NextMatches.Take(8);
     }
     <div class="col-md-4">
-        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">    
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded bg-white">    
             <ejs-grid id="grid2" dataSource="@limitedMatches" allowSorting="true">
                 <e-grid-columns>
                     <e-grid-column headerText="Next Matches" textAlign="Center" template="#homeTeamTemplate" width="130"></e-grid-column>           

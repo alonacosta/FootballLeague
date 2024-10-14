@@ -143,7 +143,7 @@ namespace FootballLeague.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var function = await _functionRepository.GetByIdAsync(id);
-            if (function.NamePosition == "Representative" || function.NamePosition == "SportsSecretary" || function.NamePosition == "Try")
+            if (function.NamePosition == "Representative" || function.NamePosition == "SportsSecretary")
             {
                 ViewBag.Message = "You can delete this position, don´t have permission!";
                 return View();

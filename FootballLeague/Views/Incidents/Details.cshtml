@@ -4,41 +4,43 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Incident Details</h2>
-<hr />
-<div>      
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Player)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Player.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Match.MatchName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Match.MatchName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OccurenceName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OccurenceName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventTime)
-        </dd>
-    </dl>
-</div>
-<div>
-    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
-    }
+<div class="shadow-none p-3 mb-5 bg-body-tertiary rounded bg-white">
+    <h3>Incident Details</h3>
+    <hr />
+    <div>      
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Player)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Player.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Match.MatchName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Match.MatchName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.OccurenceName)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.OccurenceName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.EventTime)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.EventTime)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+        }
 
-    <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+        <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+    </div>
 </div>
