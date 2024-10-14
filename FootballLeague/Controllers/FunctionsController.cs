@@ -157,9 +157,9 @@ namespace FootballLeague.Controllers
         {
             var function = await _functionRepository.GetByIdAsync(id);
             if (function.NamePosition == "Representative" || function.NamePosition == "SportsSecretary")
-            {
-                ViewBag.Message = "You can delete this position, don´t have permission!";
-                return View();
+            {                
+				_flashMessage.Danger("You can delete this position, don´t have permission!!");
+				return View();
             }
             else
             {

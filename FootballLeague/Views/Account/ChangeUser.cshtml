@@ -3,7 +3,8 @@
     ViewData["Title"] = "ChangeUser";
 }
 <div class="shadow-none p-3 mb-5 bg-body-tertiary rounded bg-white">
-    <h3>ChangeUser</h3>
+    <h3>Change User</h3>
+    <flash dismissable="true"/>
     <div class="row" >
         <div class="col-md-4 mt-5 d-flex justify-content-center">
             <img src="@Url.Content(Model.ImagePath)" alt="User pfoto" class="img-fluid rounded" style="width:200px;height:200px;max-width:100%;max-height:auto;" />
@@ -37,7 +38,7 @@
                     <button type="submit" class="btn btn-primary"><i class="fas fa-user-edit"></i> Update</button>
                     <a asp-action="ChangePassword" class="btn btn-success"><i class="fas fa-unlock"></i> Change Password</a>
                 </div>
-                <div class="text-success">@ViewBag.UserMessage</div>
+              
             </form>
         </div>
     </div>

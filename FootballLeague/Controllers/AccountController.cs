@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace FootballLeague.Controllers
 {
@@ -29,6 +30,7 @@ namespace FootballLeague.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IConfiguration _configuration;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
         public AccountController(IUserHelper userHelper,
             IFunctionRepository functionRepository,
@@ -37,7 +39,8 @@ namespace FootballLeague.Controllers
             IConverterHelper converterHelper, 
             IBlobHelper blobHelper,
             IConfiguration configuration,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IFlashMessage flashMessage)
         {
             _userHelper = userHelper;
             _functionRepository = functionRepository;
@@ -47,6 +50,7 @@ namespace FootballLeague.Controllers
             _blobHelper = blobHelper;
             _configuration = configuration;
             _mailHelper = mailHelper;
+            _flashMessage = flashMessage;
         }
 
         public IActionResult Login()
@@ -167,8 +171,7 @@ namespace FootballLeague.Controllers
                             await _userHelper.AddUserToRoleAsync(user, function.NamePosition);
                         }
 
-                        ViewBag.Message = "The instractions for user has been sent to email";
-                        //return View(model);
+                        _flashMessage.Confirmation("The instractions for user has been sent to email");                        
                     }                    
 
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged");
@@ -230,8 +233,8 @@ namespace FootballLeague.Controllers
                         model = _converterHelper.ToChangeUserViewModel(updatedUser);                        
 
                         ModelState.Clear();
-
-                        ViewBag.UserMessage = "User updated!";
+                      
+                        _flashMessage.Confirmation("User updated!");
                     }
                     else
                     {
