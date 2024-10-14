@@ -14,15 +14,7 @@ namespace FootballLeague.Data
         public PlayerRepository(DataContext context) : base(context)
         {
             _context = context;
-        }
-
-        //public IQueryable GetAllPlayersWithClubs()
-        //{
-        //    return _context.Players
-        //        .Include(c => c.Club)
-        //        .Include(p => p.Position)
-        //        .OrderBy(p => p.Name);          
-        //}
+        }       
 
         public IQueryable<Player> GetAllPlayersDoClub(int clubId)
         {
@@ -32,12 +24,24 @@ namespace FootballLeague.Data
                 .Where(c => c.ClubId == clubId);                
         }
 
-        public IQueryable<Player> GetAllPlayersDoClubWithPosition(int clubId, int positionId)
+		
+		public IQueryable<Player> GetAllPlayersDoClubWithPosition(int clubId, int positionId)
         {
             return _context.Players
                 .Include(c => c.Club)
                 .Include(p => p.Position)
-                .Where(c => c.ClubId == clubId && c.PositionId == positionId);
+                .Where(c => c.ClubId == clubId && c.PositionId == positionId); 
+        }
+
+
+        public async Task<List<Player>> GetAllPlayersDoClubWithPositionAsync(int clubId, int positionId)
+        {
+            return await _context.Players
+                .Include(c => c.Club)
+                .Include(p => p.Position)
+                .Where(c => c.ClubId == clubId && c.PositionId == positionId)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
         }
 
         public IQueryable<Player> GetAllPlayersFromMatch(string NameClubHome, string NameClubAway)

@@ -44,6 +44,7 @@ namespace FootballLeague.Controllers
         }
 
         //GET: Players
+        //[Authorize(Roles = "Representative")]
         [Authorize(Roles = "Representative")]
         public async Task<IActionResult> Index(int? id)
         {
@@ -69,8 +70,7 @@ namespace FootballLeague.Controllers
             return View(players);            
         }
 
-        // GET: Players/Details/5
-        [Authorize(Roles = "Representative")]
+        // GET: Players/Details/5        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -88,8 +88,29 @@ namespace FootballLeague.Controllers
             return View(player);
         }
 
-        // GET: Players/Create
-        [Authorize(Roles = "Representative")]
+        //GET
+        //[HttpGet("GetTeam/{id}")]       
+        public IActionResult GetTeam(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var players = _playerRepository.GetAllPlayersDoClub(id.Value).ToList();
+
+            if (players.Count == 0)
+            {
+                ViewBag.Message = "Club has no players yet";
+                return View();
+
+            }
+			return View(players);
+		}
+
+
+			// GET: Players/Create
+			[Authorize(Roles = "Representative")]
         public async Task<IActionResult> Create()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -282,52 +303,7 @@ namespace FootballLeague.Controllers
             }            
         }
 
-        //GET
-        //[HttpGet("GetTeam/{id}")]
-        public async Task<IActionResult> GetTeam(int? id)
-        {           
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var club = await _clubRepository.GetByIdAsync(id.Value);           
-
-            var teamViewModels = new List<TeamViewModel>();
-
-            var positions = _positionRepository.GetAll();
-            var players = new List<Player>();
-
-            foreach (var position in positions)
-            {
-                players = _playerRepository
-                          .GetAllPlayersDoClubWithPosition(club.Id, position.Id)
-                          .OrderBy(p => p.Name)
-                          .ToList();               
-
-                foreach (var player in players)
-                {
-                    var model = new TeamViewModel
-                    {
-                        ImageId = player.ImageId,
-                        ImageFullPath = player.ImagePlayerFullPath,
-                        Player = player,
-                        Club = club,
-                        Position = player.Position,
-                        PositionId = player.PositionId,
-                        PositionName = player.Position.Name,
-                    };
-
-                    teamViewModels.Add(model);
-                }
-            }
-
-            if (!teamViewModels.Any())
-            {
-                ViewBag.Message = "Club has no players yet";
-            }
-
-            return View(teamViewModels);
-        }
+        
 
         private bool PlayerExists(int id)
         {

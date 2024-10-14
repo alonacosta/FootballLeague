@@ -11,6 +11,7 @@ namespace FootballLeague.Data
         IQueryable<Player> GetAllPlayersDoClub(int clubId);
         IQueryable<Player> GetAllPlayersDoClubWithPosition(int clubId, int positionId);
         IQueryable<Player> GetAllPlayersFromMatch(string NameClubHome, string NameClubAway);
+        Task<List<Player>> GetAllPlayersDoClubWithPositionAsync(int clubId, int positionId);
         Task<Player> GetPlayerByIdAsync(int id);
         IEnumerable<SelectListItem> GetComboPlayers();
     }

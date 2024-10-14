@@ -41,22 +41,22 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>
+                                    <td class="align-middle">
                                         <img src="@Url.Content(item.ImageFullPath)" alt="Club logo" style="width:50px;height:auto;max-width:100%;max-height:auto;" />
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         @Html.DisplayFor(modelItem => item.FullName)
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         @Html.DisplayFor(modelItem => item.PhoneNumber)
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         @Html.DisplayFor(modelItem => item.Club.Name)
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         @Html.DisplayFor(modelItem => item.Function.NamePosition)
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         <a asp-action="Edit" asp-controller="Users" asp-route-UserId="@item.UserId" class="btn btn-warning"><i class="fas fa-edit"></i></a>
                                     </td>
                                 </tr>
@@ -66,9 +66,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-   
+    </div>  
 
 </div>
 

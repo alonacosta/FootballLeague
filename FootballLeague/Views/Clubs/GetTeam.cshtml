@@ -1,0 +1,39 @@
+﻿@model IEnumerable<FootballLeague.Models.TeamViewModel>
+
+@{
+    ViewData["Title"] = "Team";
+}
+
+<div class="shadow-none p-3 mb-5 bg-body-tertiary rounded bg-white">
+    <div class="container mt-4">
+        <div class="row">
+            <h3 class="col">Team Details</h3>
+            <div class="col align-self-end">
+                <a asp-action="Index" asp-controller="Clubs" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i> Back to Clubs</a>
+            </div>
+        </div>
+
+        <hr />
+        <p> @ViewBag.Message</p>
+        <div class="container mt-4">
+            @foreach (var item in Model.Select(m => m.PositionName).Distinct())
+            {
+                <div class="mb-4">
+                    <h6 class="text-uppercase">@item</h6>
+                    <ul class="list-group">
+                        @foreach (var player in Model.Where(p => p.PositionName == item))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+                                <div class="d-flex align-items-center">
+                                    <img src="@player.ImageFullPath" alt="@player.Player.Name" class="me-3 mr-2" style="width: 35px; height: 35px;">
+                                    <span>@player.Player.Name</span>
+                                </div>
+
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>

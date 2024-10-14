@@ -23,6 +23,8 @@ namespace FootballLeague.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IStaffMemberRepository _staffMemberRepository;
         private readonly IMatchRepository _matchRepository;
+        private readonly IPositionRepository _positionRepository;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IFlashMessage _flashMessage;
 
         public ClubsController(IClubRepository clubRepository,
@@ -31,6 +33,8 @@ namespace FootballLeague.Controllers
             IConverterHelper converterHelper,
             IStaffMemberRepository staffMemberRepository,
             IMatchRepository matchRepository,
+            IPositionRepository positionRepository,
+            IPlayerRepository playerRepository,
             IFlashMessage flashMessage
             )
         {       
@@ -40,6 +44,8 @@ namespace FootballLeague.Controllers
             _converterHelper = converterHelper;
             _staffMemberRepository = staffMemberRepository;
             _matchRepository = matchRepository;
+            _positionRepository = positionRepository;
+            _playerRepository = playerRepository;
             _flashMessage = flashMessage;
         }
 
@@ -150,8 +156,57 @@ namespace FootballLeague.Controllers
 			return View(model);
 		}
 
-		// GET: Clubs/Create
-		[Authorize(Roles = "Admin")]
+        //GET
+        //[HttpGet("Clubs/GetTeam/{id}")]
+        [HttpGet]      
+        public async Task<IActionResult> GetTeam(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var club = await _clubRepository.GetByIdAsync(id.Value);
+            if(club == null) { return NotFound(); } 
+
+            var teamViewModels = new List<TeamViewModel>();
+
+            var positions = _positionRepository.GetAll();
+            var players = new List<Player>();
+
+            foreach (var position in positions)
+            {
+                players = await _playerRepository
+                          .GetAllPlayersDoClubWithPositionAsync(club.Id, position.Id);
+
+                if(!players.Any()) continue;
+
+                foreach (var player in players)
+                {
+                    var model = new TeamViewModel
+                    {
+                        ImageId = player.ImageId,
+                        ImageFullPath = player.ImagePlayerFullPath,
+                        Player = player,
+                        Club = club,
+                        Position = player.Position,
+                        PositionId = player.PositionId,
+                        PositionName = player.Position.Name,
+                    };
+
+                    teamViewModels.Add(model);
+                }
+            }
+
+            if (!teamViewModels.Any())
+            {
+                ViewBag.Message = "Club has no players yet";
+            }
+
+            return View(teamViewModels);
+        }
+
+        // GET: Clubs/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();

@@ -36,8 +36,14 @@
         </div>
     
     </div>
-    <div class="mt-4">   
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>   
-        <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>   
+    <div class="mt-4 btn-group">   
+        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Representative"))
+        {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning mr-2"><i class="fas fa-edit"></i> Edit</a>   
+        }
+        <button type="button" class="btn btn-success " onclick="history.back()">
+            <i class="fas fa-chevron-left"></i> Back to List
+        </button>
+       @*  <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>    *@
     </div>
 </div>
