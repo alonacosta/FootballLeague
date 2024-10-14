@@ -1,0 +1,69 @@
+﻿@model FootballLeague.Models.EditUserViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="shadow-none p-3 mb-5 bg-body-tertiary rounded bg-white">
+    <h3>Edit User</h3>
+    <hr />
+    <div class="row d-flex align-items-start">
+        <div class="col-md-4">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="ImageId" />
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label"></label>
+                    <input asp-for="ImageFile" class="form-control" type="file" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>  
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div> 
+                <div class="form-group">
+                    <label asp-for="ClubId" class="control-label"></label>
+                    <select asp-for="ClubId" asp-items="Model.Clubs" class="form-control"></select>
+                    <span asp-validation-for="ClubId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FunctionId" class="control-label"></label>
+                    <select asp-for="FunctionId" asp-items="Model.Functions" class="form-control"></select>
+                    <span asp-validation-for="FunctionId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3 ml-5">
+            <img src="@Url.Content(Model.ImageFullPath)" alt="Image" style="width:300px;height:300px;max-width:100%;height:auto;" />
+	    </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#FunctionId").change(function () {
+                var FunctionId = $(this).val();
+            });
+
+        });
+    </script>
+}

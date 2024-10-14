@@ -24,7 +24,7 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.FullName)
-                                </th>
+                                </th>                                
                                 <th>
                                     @Html.DisplayNameFor(model => model.PhoneNumber)
                                 </th>
@@ -34,6 +34,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.FunctionId)
                                 </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +55,9 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Function.NamePosition)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-controller="Users" asp-route-UserId="@item.UserId" class="btn btn-warning"><i class="fas fa-edit"></i></a>
                                     </td>
                                 </tr>
                             }

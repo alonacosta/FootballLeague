@@ -11,5 +11,7 @@ namespace FootballLeague.Data
         Task<StaffMember> GetStaffMemberAsync(User user);
         Task<List<StaffMember>> GetStaffMembersByClubAsync(int clubId);
         Task<StaffMember> GetStaffMemberByIdAsync(int id);
+        Task<StaffMember> GetStaffMemberByUserIdAsync(string UserId);
+        Task<bool> ExistMemberAsync(string userId);
     }
 }

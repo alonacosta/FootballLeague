@@ -7,6 +7,8 @@ namespace FootballLeague.Models
 {
     public class UserViewModel /*: User*/
     {
+        public string UserId { get; set; }
+
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
 
@@ -14,6 +16,8 @@ namespace FootballLeague.Models
 
         [Display(Name = "Name")]
         public string FullName { get; set; }
+
+        public string UserName { get; set; }    
 
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
@@ -28,7 +32,6 @@ namespace FootballLeague.Models
         public Function Function { get; set; }
 
 
-        //[Display(Name = "Name")]
-        //public IFormFile ImageFile { get; set; }
+      
     }
 }

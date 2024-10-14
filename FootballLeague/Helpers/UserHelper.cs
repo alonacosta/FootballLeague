@@ -76,6 +76,7 @@ namespace FootballLeague.Helpers
             return await _userManager.FindByEmailAsync(email);
         }
 
+      
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);

@@ -53,6 +53,20 @@ namespace FootballLeague.Data
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        public async Task<StaffMember> GetStaffMemberByUserIdAsync(string UserId)
+        {
+            return await _context.StaffMembers
+               .Include(s => s.Club)
+               .Include(s => s.Function)
+               .Include(s => s.User)
+               .FirstOrDefaultAsync(s => s.User.Id == UserId);
+        }
+
+        public async Task<bool> ExistMemberAsync(string userId)
+        {
+            return await _context.StaffMembers.AnyAsync(s => s.User.Id == userId);
+        }
+
 
     }
 }
