@@ -139,6 +139,12 @@ namespace FootballLeague
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute(
+                //    name: "matchesRoute",
+                //    pattern: "Matches/{action=Index}/{id?}",
+                //    defaults: new { controller = "Matches" }
+                //);
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

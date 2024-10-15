@@ -16,9 +16,9 @@ namespace FootballLeague.Data
 			_context = context;
 		}
 
-        public IQueryable GetAllClubs()
+        public IQueryable<Club> GetAllClubs()
         {
-            return _context.Clubs;
+            return _context.Clubs.AsNoTracking();
         }
 
         public IEnumerable<SelectListItem> GetComboClubs()

@@ -55,8 +55,14 @@
         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("SportsSecretary"))
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+            <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
         }
-    
-        <a asp-action="Index" class="btn btn-success"><i class="fas fa-chevron-left"></i> Back to List</a>
+        else {
+            <button type="button" class="btn btn-success " onclick="history.back()">
+                <i class="fas fa-chevron-left"></i> Back to List
+            </button>
+        }
+       
+       
     </div>
 </div>

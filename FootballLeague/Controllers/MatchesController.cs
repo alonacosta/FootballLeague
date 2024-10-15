@@ -10,6 +10,7 @@ using FootballLeague.Data.Entities;
 using FootballLeague.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
+using Syncfusion.EJ2.Linq;
 
 namespace FootballLeague.Controllers
 {
@@ -28,85 +29,35 @@ namespace FootballLeague.Controllers
             _roundRepository = roundRepository;
         }
 
-        // GET: Matches
-        public async Task<IActionResult> Index()
-        {  
-            var matches = _matchRepository.GetMatches();
-           
-            var modelList = new List<MatchViewModel>();
-
-            foreach (var match in matches)
-            {
-                var clubHome = await _clubRepository.GetClubeByNameAsync(match.HomeTeam);
-                var clubAway = await _clubRepository.GetClubeByNameAsync(match.AwayTeam);
-
-                var model = new MatchViewModel
-                {
-                    Id = match.Id,
-                    Round = match.Round,
-                    RoundId = match.RoundId,
-                    HomeTeamId = clubHome.Id,
-                    AwayTeamId = clubAway.Id,
-                    HomeTeam = clubHome.Name,
-                    AwayTeam = clubAway.Name,
-                    HomeScore = match.HomeScore,
-                    AwayScore = match.AwayScore,
-                    IsClosed = match.IsClosed,
-                    IsFinished = match.IsFinished,
-                    StartDate = match.StartDate,
-                    ImageIdHomeTeam = clubHome.ImageId,
-                    ImagePathHomeTeam = clubHome.ImageFullPath,
-                    ImageIdAwayTeam = clubAway.ImageId,
-                    ImagePathAwayTeam = clubAway.ImageFullPath,
-                };
-
-                modelList.Add(model);
-            }
-            return View(modelList);
-        }
-
-        //GET: MatchesByRound     
-        public async Task<IActionResult> MatchesByRound(int? id)
+        // GET: Matches       
+        public IActionResult Index()
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var matches = await _matchRepository.GetMatchesWithRound(id.Value);
+            var matches = _matchRepository.GetMatches();
 
             var modelList = new List<MatchViewModel>();
 
             foreach (var match in matches)
             {
-                var clubHome = await _clubRepository.GetClubeByNameAsync(match.HomeTeam);
-                var clubAway = await _clubRepository.GetClubeByNameAsync(match.AwayTeam);
-
                 var model = new MatchViewModel
                 {
                     Id = match.Id,
                     Round = match.Round,
                     RoundId = match.RoundId,
-                    HomeTeamId = clubHome.Id,
-                    AwayTeamId = clubAway.Id,
-                    HomeTeam = clubHome.Name,
-                    AwayTeam = clubAway.Name,
+                    HomeTeam = match.HomeTeam,
+                    AwayTeam = match.AwayTeam,
                     HomeScore = match.HomeScore,
                     AwayScore = match.AwayScore,
                     IsClosed = match.IsClosed,
                     IsFinished = match.IsFinished,
                     StartDate = match.StartDate,
-                    ImageIdHomeTeam = clubHome.ImageId,
-                    ImagePathHomeTeam = clubHome.ImageFullPath,
-                    ImageIdAwayTeam = clubAway.ImageId,
-                    ImagePathAwayTeam = clubAway.ImageFullPath,
                 };
 
                 modelList.Add(model);
             }
-            return View(modelList);
+            return View(modelList);            
         }
 
+       
         // GET: Matches/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -476,6 +427,48 @@ namespace FootballLeague.Controllers
                 return View("Error");
             }
             
+        }
+
+        //GET: MatchesByRound     
+        public async Task<IActionResult> MatchesByRound(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var matches = await _matchRepository.GetMatchesWithRound(id.Value);
+
+            var modelList = new List<MatchViewModel>();
+
+            foreach (var match in matches)
+            {
+                var clubHome = await _clubRepository.GetClubeByNameAsync(match.HomeTeam);
+                var clubAway = await _clubRepository.GetClubeByNameAsync(match.AwayTeam);
+
+                var model = new MatchViewModel
+                {
+                    Id = match.Id,
+                    Round = match.Round,
+                    RoundId = match.RoundId,
+                    HomeTeamId = clubHome.Id,
+                    AwayTeamId = clubAway.Id,
+                    HomeTeam = clubHome.Name,
+                    AwayTeam = clubAway.Name,
+                    HomeScore = match.HomeScore,
+                    AwayScore = match.AwayScore,
+                    IsClosed = match.IsClosed,
+                    IsFinished = match.IsFinished,
+                    StartDate = match.StartDate,
+                    ImageIdHomeTeam = clubHome.ImageId,
+                    ImagePathHomeTeam = clubHome.ImageFullPath,
+                    ImageIdAwayTeam = clubAway.ImageId,
+                    ImagePathAwayTeam = clubAway.ImageFullPath,
+                };
+
+                modelList.Add(model);
+            }
+            return View(modelList);
         }
 
         [HttpGet]

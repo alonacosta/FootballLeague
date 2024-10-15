@@ -8,7 +8,7 @@ namespace FootballLeague.Data
 {
     public interface IClubRepository : IGenericRepository<Club>
     {       
-        public IQueryable GetAllClubs();
+        public IQueryable<Club> GetAllClubs();
 
         IEnumerable<SelectListItem> GetComboClubs();
         Task<Club> GetClubDoPlayerAsync(Player player);

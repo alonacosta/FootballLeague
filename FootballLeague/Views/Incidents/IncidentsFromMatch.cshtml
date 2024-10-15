@@ -11,8 +11,14 @@
                 <div class="panel-heading row">
                     <h3 class="col panel-title">Incidents from Match</h3>
                     <div class="col">
-                        <a asp-action="Index" asp-controller="Matches" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i> Back to Matches</a>
+                        <button type="button" class="btn btn-outline-success" onclick="history.back()">
+                             <i class="fas fa-chevron-left"></i> Back to List
+                        </button>
                     </div>
+                   
+                    @* <div class="col">
+                        <a asp-action="Index" asp-controller="Matches" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i> Back to Matches</a>
+                    </div> *@
                 </div>
                 <div class="panel-body table-responsive">
                     <table class="table table-hover table-striped" id="IncidentsFromMatch">

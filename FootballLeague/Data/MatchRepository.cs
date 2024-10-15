@@ -24,7 +24,8 @@ namespace FootballLeague.Data
         {
             return _context.Matches
                 .Include(m => m.Round)
-                .OrderByDescending(m => m.StartDate);
+                .OrderByDescending(m => m.StartDate)
+                .AsNoTracking();
         }
 
         
