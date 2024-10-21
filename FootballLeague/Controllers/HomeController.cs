@@ -25,6 +25,7 @@ namespace FootballLeague.Controllers
             _matchRepository = matchRepository;
         }
 
+        //GET: Home
         public async Task<IActionResult> Index()
         {
             var statistics = await _matchRepository.CalculateStatisticsAsync();
@@ -35,24 +36,11 @@ namespace FootballLeague.Controllers
                 Statistics = statistics,
                 NextMatches = nextMatches
             };
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-               
-            //    if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
-            //    {
-            //        return RedirectToAction("Index", "Dashboard");
-            //    }
-            //    else
-            //    {
-                   
-            //        return View(model); 
-            //    }         
-
-            //}
+           
             return View(model);
         }
 
+        //GET: Home/Privacy
         public IActionResult Privacy()
         {
             return View();

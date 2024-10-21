@@ -159,8 +159,5 @@ namespace FootballLeague.Controllers
             }
             return View(model);
         }
-
-
-
     }
 }

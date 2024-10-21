@@ -33,9 +33,9 @@ namespace FootballLeague.Controllers
             _blobHelper = blobHelper;
         }
        
+        // GET: StaffMembers
         public async Task<IActionResult> Index()
         {
-
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
             if (user == null) 
             {

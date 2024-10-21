@@ -53,6 +53,7 @@ namespace FootballLeague.Controllers
             _flashMessage = flashMessage;
         }
 
+        //GET: Account/Login
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -62,6 +63,7 @@ namespace FootballLeague.Controllers
             return View();
         }
 
+        //POST: Account/Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -69,8 +71,7 @@ namespace FootballLeague.Controllers
             {            
                 var result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded) 
-                {
-                    //ViewBag.UserPhoto = await GetUserProfileImage();
+                {                   
 
                     if(this.Request.Query.Keys.Contains("ReturnUrl"))
                     {
@@ -94,12 +95,15 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //GET: Account/Logout
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
             return RedirectToAction("Index", "Home");
         }
 
+
+        //GET: Account/Register
         [Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
@@ -111,6 +115,8 @@ namespace FootballLeague.Controllers
             return View(model); 
         }
 
+
+        //POST: Account/Register
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
@@ -186,11 +192,13 @@ namespace FootballLeague.Controllers
             return RedirectToAction("Index", "Users");             
         }
 
+        //GET: Account/GetSuccess
         public IActionResult GetSuccess()
         {
             return View();
         }
 
+        //GET: Account/ChangeUser
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -203,6 +211,7 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //POST: Account/ChangeUser
         [HttpPost]
         public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
         {
@@ -245,11 +254,13 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //GET: Account/ChangePassword
         public IActionResult ChangePassword()
         {
             return View();
         }
 
+        //POST: Account/ChangePassword
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -276,11 +287,13 @@ namespace FootballLeague.Controllers
             return this.View(model);
         }
 
+        //GET: Account/NotAuthorized
         public IActionResult NotAuthorized()
         {
             return View();
         }
 
+        //POST: Account/CreateToken
         [HttpPost]
         public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
         {
@@ -324,6 +337,7 @@ namespace FootballLeague.Controllers
             return BadRequest();
         }
 
+        //GET: Account/ConfirmEmail
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
@@ -347,6 +361,7 @@ namespace FootballLeague.Controllers
             return View();
         }
 
+        //GET: Account/ResetPassword
         public async Task<IActionResult> ResetPassword(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
@@ -370,6 +385,7 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //POST: Account/ResetPassword
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
@@ -404,11 +420,13 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //GET: Account/RecoverPassword
         public IActionResult RecoverPassword()
         {
             return View();
         }
 
+        //POST: Account/RecoverPassword
         [HttpPost]
         public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
         {
@@ -444,11 +462,13 @@ namespace FootballLeague.Controllers
             return this.View(model);
         }
 
+        //GET: Account/ResetOldPassword
         public IActionResult ResetOldPassword(string token)
         {
             return View();
         }
 
+        //POST: Account/ResetOldPassword
         [HttpPost]
         public async Task<IActionResult> ResetOldPassword(ResetOldPasswordViewModel model)
         {

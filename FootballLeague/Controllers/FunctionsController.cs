@@ -163,7 +163,7 @@ namespace FootballLeague.Controllers
             }
             else
             {
-                 try
+                try
                 {
                     await _functionRepository.DeleteAsync(function);
            

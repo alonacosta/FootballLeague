@@ -84,8 +84,7 @@ namespace FootballLeague.Controllers
                 return NotFound();
             }
             var model = new IncidentViewModel
-            {   Match = match, 
-                //Matches = _matchRepository.GetComboMatches(),
+            {   Match = match,                 
                 Players = _playerRepository.GetComboPlayers(),
             };
             
@@ -107,8 +106,7 @@ namespace FootballLeague.Controllers
                 {                   
                     MatchId = model.Match.Id,
                     OccurenceName = model.OccurenceName,
-                    EventTime = model.EventTime,
-                    //Match = model.Match,
+                    EventTime = model.EventTime,                   
                     Player = player,
                     PlayerId = model.PlayerId,
 
@@ -116,8 +114,7 @@ namespace FootballLeague.Controllers
                 await _incidentRepository.CreateAsync(incident);
                
                 return RedirectToAction(nameof(Index));
-            }
-            
+            }            
             return View(model);
         }
 
@@ -202,10 +199,7 @@ namespace FootballLeague.Controllers
                 return NotFound();
             }
              var incident = await _incidentRepository.GetIncidentByIdAsync(id.Value);
-            //var incident = await _context.Incidents
-            //    .Include(i => i.Match)
-            //    .Include(i => i.Player)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (incident == null)
             {
                 return NotFound();
@@ -226,11 +220,11 @@ namespace FootballLeague.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Incidents/GetPlayersAsync/5
         [HttpPost]
         [Route("Incidents/GetPlayersAsync")]
         public async Task<JsonResult> GetPlayersAsync(int matchId)
-        {
-            //var players = new List<Player>();
+        {            
             var match = await _matchRepository.GetMatchByIdAsync(matchId);
             var nameClubHome = match.HomeTeam;
             var nameClubAway = match.AwayTeam;  
@@ -239,6 +233,7 @@ namespace FootballLeague.Controllers
             return Json(players);
         }
 
+        // GET: Incidents/GetIncidentsDateRange/5
         [HttpGet]
         public async Task<IActionResult> GetIncidentsDateRange(int matchId)
         {

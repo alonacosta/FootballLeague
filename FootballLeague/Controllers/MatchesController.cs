@@ -310,7 +310,7 @@ namespace FootballLeague.Controllers
         }
 
         // GET: Matches/CloseMatch/5
-        [Authorize(Roles = "SportsSecretary")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CloseMatch(int? id)
         {
             if (id == null)
@@ -332,7 +332,7 @@ namespace FootballLeague.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SportsSecretary")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CloseMatch(int id, Match match)
         {
             if (id != match.Id)
@@ -429,7 +429,7 @@ namespace FootballLeague.Controllers
             
         }
 
-        //GET: MatchesByRound     
+        //GET: Matches/MatchesByRound/5     
         public async Task<IActionResult> MatchesByRound(int? id)
         {
             if (id == null)
@@ -471,6 +471,7 @@ namespace FootballLeague.Controllers
             return View(modelList);
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> GetRoundStartDate(int roundId)
         {            
@@ -484,7 +485,7 @@ namespace FootballLeague.Controllers
             return Json(new { startDate = round.DateStart.ToString("yyyy-MM-dd HH:mm") });
         }
 
-
+       
         [HttpGet]
         public async Task<IActionResult> GetMatchDateRange(int matchId)
         {

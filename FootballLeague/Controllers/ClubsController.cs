@@ -156,8 +156,7 @@ namespace FootballLeague.Controllers
 			return View(model);
 		}
 
-        //GET
-        //[HttpGet("Clubs/GetTeam/{id}")]
+        //GET: Clubs/GetTeam/5        
         [HttpGet]      
         public async Task<IActionResult> GetTeam(int? id)
         {

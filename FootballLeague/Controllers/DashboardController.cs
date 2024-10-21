@@ -15,9 +15,9 @@ namespace FootballLeague.Controllers
         {
             _roundRepository = roundRepository;
             _matchRepository = matchRepository;
-        }
-
-       
+        }  
+        
+        //GET: Dashboard
         public IActionResult Index()
         {
             var roundsReadyToClose = _roundRepository.GetRoundsReadyToClose();
@@ -30,11 +30,16 @@ namespace FootballLeague.Controllers
                 RoundsReadyToClose = roundsReadyToClose,
                 MatchesReadyToClose = matchesReadyToClose
             };
+
+            ViewBag.MatchesCount = matchesReadyToClose.Count;
+            ViewBag.RoundsCount = roundsReadyToClose.Count;
+            ViewBag.Total = roundsReadyToClose.Count + matchesReadyToClose.Count;
+
             return View(model);
         }
 
-       
 
+        //GET: Dashboard/GetStatistics
         public async Task<IActionResult> GetStatistics()
         {
             var statistics = await _matchRepository.CalculateStatisticsAsync();
@@ -46,6 +51,7 @@ namespace FootballLeague.Controllers
             return View(model);
         }
 
+        //GET: Dashboard/GetAllStatistics
         public async Task<IActionResult> GetAllStatistics()
         {
             var rounds = _roundRepository.GetAllRounds();
@@ -60,6 +66,7 @@ namespace FootballLeague.Controllers
             return View(dashboardAllStat);
         }
 
+        //GET: Dashboard/GetStatisticsByRound/2
         public async Task<IActionResult> GetStatisticsByRound(int? id)
         {
             if(id == null)
@@ -73,28 +80,6 @@ namespace FootballLeague.Controllers
                 Statistics = statistics,
             };
             return View(model);
-        }
-
-        //public async Task<IActionResult> GetAllStatisticsByRound()
-        //{
-        //    var rounds = _roundRepository.GetAllRounds();   
-        //    var allRoundsStatisticts = new List<RoundStatisticsViewModel>();
-
-        //    foreach (var round in rounds)
-        //    {
-        //        var statistics = await _matchRepository.CalculateStatisticsFromRoundAsync(round.Id);
-        //        var roundStatistics = new RoundStatisticsViewModel
-        //        {
-        //            RoundName = round.Name,
-        //            Statistics = statistics,
-        //        };
-        //        allRoundsStatisticts.Add(roundStatistics);
-        //    }
-        //    var dashboardAllStat = new DashboardViewModel
-        //    {
-        //        RoundStatistics = allRoundsStatisticts,
-        //    };
-        //    return View(dashboardAllStat);
-        //}
+        }       
     }
 }
